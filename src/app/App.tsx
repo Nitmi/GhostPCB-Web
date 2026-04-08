@@ -124,62 +124,177 @@ function App() {
 
   return (
     <main className="app-shell">
-      <section className="hero-panel">
-        <div className="hero-copy">
-          <p className="eyebrow">GhostPCB Web</p>
-          <h1>Gerber ZIP 本地混淆与重打包</h1>
-          <p className="hero-text">
-            浏览器内完成 ZIP 解包、丝印扰动、EasyEDA 风格头注入和 LCEDA
-            签名注入。文件不上传，处理全程运行在本地 Worker。
-          </p>
+      <section className="hero-stage">
+        <div className="hero-noise" aria-hidden="true" />
+        <div className="hero-orb hero-orb-left" aria-hidden="true" />
+        <div className="hero-orb hero-orb-right" aria-hidden="true" />
+
+        <header className="hero-nav">
+          <div className="brand-lockup">
+            <span className="brand-mark">G</span>
+            <div>
+              <strong>GhostPCB</strong>
+              <span>Web Local Engine</span>
+            </div>
+          </div>
+          <div className="hero-nav-meta">Privacy-first gerber processing</div>
+        </header>
+
+        <div className="hero-grid">
+          <div className="hero-copy">
+            <p className="eyebrow">GhostPCB Web</p>
+            <h1>让 Gerber 处理像一台精密设备，而不是一个普通网页。</h1>
+            <p className="hero-text">
+              在浏览器里完成 ZIP 解包、丝印扰动、EasyEDA 风格头注入与 LCEDA
+              签名注入。文件不出本地，整个过程交给独立 Worker 静默完成。
+            </p>
+
+            <div className="hero-actions">
+              <a className="primary-button" href="#workspace">
+                打开工作台
+              </a>
+              <div className="hero-note">
+                <span>Local only</span>
+                <span>Worker driven</span>
+                <span>ZIP out</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="hero-visual" aria-hidden="true">
+            <div className="device-shell">
+              <div className="device-camera" />
+              <div className="device-screen">
+                <div className="device-screen-top">
+                  <span />
+                  <span />
+                  <span />
+                </div>
+                <div className="device-metrics">
+                  <div>
+                    <label>Execution</label>
+                    <strong>Browser Native</strong>
+                  </div>
+                  <div>
+                    <label>Pipeline</label>
+                    <strong>ZIP → Parse → Shift → Pack</strong>
+                  </div>
+                </div>
+                <div className="device-waveform">
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                </div>
+                <div className="device-footer">
+                  <p>Silkscreen shift</p>
+                  <p>Header inject</p>
+                  <p>Signature stamp</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <dl className="hero-stats">
-          <div>
-            <dt>运行方式</dt>
-            <dd>Pure Browser</dd>
-          </div>
-          <div>
-            <dt>处理线程</dt>
-            <dd>Web Worker</dd>
-          </div>
-          <div>
-            <dt>输出形式</dt>
-            <dd>ZIP 下载</dd>
-          </div>
-        </dl>
       </section>
 
-      <section className="workspace-grid">
-        <div className="stack-column">
-          <UploadPanel
-            selectedFile={selectedFile}
-            disabled={isRunning}
-            onFileSelected={applySelectedFile}
-            onClearFile={() => applySelectedFile(null)}
-          />
-          <ProcessForm
-            count={count}
-            disabled={!selectedFile || isRunning}
-            isRunning={isRunning}
-            onCountChange={(value) => {
-              setCount(value)
-              setError(null)
-            }}
-            onSubmit={handleSubmit}
-            onCancel={handleCancel}
-          />
+      <section className="support-band">
+        <div>
+          <span>隐私</span>
+          <p>输入文件不会上传服务器，适合敏感 PCB 工程直接在本地处理。</p>
+        </div>
+        <div>
+          <span>一致性</span>
+          <p>首期只保留当前真实启用的策略，避免无意义的历史功能堆叠。</p>
+        </div>
+        <div>
+          <span>性能</span>
+          <p>ZIP 解包与批量文本处理都在 Worker 中执行，主线程保持可交互。</p>
+        </div>
+      </section>
+
+      <section id="workspace" className="workspace-section">
+        <div className="section-heading">
+          <p className="eyebrow">Workspace</p>
+          <h2>本地处理工作台</h2>
+          <p>
+            上传一个 Gerber ZIP，设置输出数量，然后直接在浏览器内生成可下载的结果包。
+          </p>
         </div>
 
-        <div className="stack-column">
-          <ProgressBar progress={progress} active={isRunning || status === 'success'} />
-          <ResultPanel
-            status={status}
-            error={error}
-            results={results}
-            onDownloadAll={() => downloadAllResults(results)}
-            onDownloadOne={(result) => downloadResultFile(result)}
-          />
+        <div className="workspace-grid">
+          <div className="stack-column">
+            <UploadPanel
+              selectedFile={selectedFile}
+              disabled={isRunning}
+              onFileSelected={applySelectedFile}
+              onClearFile={() => applySelectedFile(null)}
+            />
+            <ProcessForm
+              count={count}
+              disabled={!selectedFile || isRunning}
+              isRunning={isRunning}
+              onCountChange={(value) => {
+                setCount(value)
+                setError(null)
+              }}
+              onSubmit={handleSubmit}
+              onCancel={handleCancel}
+            />
+          </div>
+
+          <div className="stack-column">
+            <ProgressBar progress={progress} active={isRunning || status === 'success'} />
+            <ResultPanel
+              status={status}
+              error={error}
+              results={results}
+              onDownloadAll={() => downloadAllResults(results)}
+              onDownloadOne={(result) => downloadResultFile(result)}
+            />
+          </div>
         </div>
+      </section>
+
+      <section className="detail-stage">
+        <div className="detail-copy">
+          <p className="eyebrow">Pipeline</p>
+          <h2>单一职责的结构，让首期可交付，也让后续迁移到 WASM 更平滑。</h2>
+          <p>
+            UI 只负责输入、状态和下载，算法链路放在 `core`，重任务进入 Worker。
+            这让当前版本足够快，也为未来替换底层实现预留了干净边界。
+          </p>
+        </div>
+        <div className="detail-list">
+          <div>
+            <strong>01</strong>
+            <p>识别 Gerber 类型，保留未知文件</p>
+          </div>
+          <div>
+            <strong>02</strong>
+            <p>按 EasyEDA 来源决定是否注入伪装头</p>
+          </div>
+          <div>
+            <strong>03</strong>
+            <p>仅对丝印层做统一轻微偏移，不改 I/J</p>
+          </div>
+          <div>
+            <strong>04</strong>
+            <p>重写并插入未使用的 LCEDA 风格签名 ADD</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="final-cta">
+        <p className="eyebrow">Ready</p>
+        <h2>本地处理，立即得到结果 ZIP。</h2>
+        <p>没有后端，没有队列，没有上传等待，只有浏览器里的完整处理链路。</p>
+        <a className="secondary-button" href="#workspace">
+          现在开始
+        </a>
       </section>
     </main>
   )
