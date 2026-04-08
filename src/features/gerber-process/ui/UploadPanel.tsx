@@ -32,7 +32,7 @@ export function UploadPanel(props: UploadPanelProps) {
   }
 
   return (
-    <section className="panel">
+    <section className="panel panel-strong upload-panel">
       <div className="panel-head">
         <div>
           <h2>输入 ZIP</h2>

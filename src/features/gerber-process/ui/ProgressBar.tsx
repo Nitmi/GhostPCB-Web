@@ -9,7 +9,7 @@ export function ProgressBar(props: ProgressBarProps) {
   const { progress, active } = props
 
   return (
-    <section className="panel">
+    <section className="panel panel-dark progress-panel">
       <div className="panel-head">
         <div>
           <h2>处理进度</h2>

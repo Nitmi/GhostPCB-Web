@@ -16,7 +16,7 @@ export function ProcessForm(props: ProcessFormProps) {
   const { count, disabled, isRunning, onCountChange, onSubmit, onCancel } = props
 
   return (
-    <section className="panel">
+    <section className="panel panel-muted control-panel">
       <div className="panel-head">
         <div>
           <h2>处理参数</h2>

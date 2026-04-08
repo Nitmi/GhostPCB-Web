@@ -13,7 +13,7 @@ export function ResultPanel(props: ResultPanelProps) {
   const { status, error, results, onDownloadAll, onDownloadOne } = props
 
   return (
-    <section className="panel">
+    <section className="panel panel-dark result-panel">
       <div className="panel-head">
         <div>
           <h2>输出结果</h2>
