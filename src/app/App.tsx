@@ -172,7 +172,10 @@ function App() {
         <section id="workspace" className="workspace-body">
           <aside className="workspace-sidebar">
             <div className="sidebar-intro">
-              <p>单次导入一个 Gerber ZIP，在浏览器内完成处理并直接下载结果。</p>
+              <p>
+                Gerber 混淆工具 Web 版，异化 Gerber 文件，但生产出来是同样的
+                PCB。
+              </p>
             </div>
 
             <div className="sidebar-metrics">
