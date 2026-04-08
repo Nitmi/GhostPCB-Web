@@ -403,7 +403,7 @@
 }
 
 .upload-dropzone[data-selected='true'] {
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 1fr) auto;
   background:
     linear-gradient(135deg, rgba(234, 251, 248, 0.84), rgba(241, 247, 255, 0.74));
 }
@@ -490,13 +490,11 @@
 }
 
 .upload-clear-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
   width: 28px;
   height: 28px;
   display: grid;
   place-items: center;
+  justify-self: end;
   border-radius: 999px;
   border: 1px solid rgba(61, 90, 138, 0.14);
   background: rgba(255, 255, 255, 0.76);

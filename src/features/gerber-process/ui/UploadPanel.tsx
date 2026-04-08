@@ -90,18 +90,6 @@ export function UploadPanel(props: UploadPanelProps) {
         onDragLeave={() => setDragging(false)}
         onDrop={handleDrop}
       >
-        {selectedFile ? (
-          <button
-            type="button"
-            className="upload-clear-button"
-            onClick={handleClear}
-            disabled={disabled}
-            aria-label="清除已选文件"
-          >
-            ×
-          </button>
-        ) : null}
-
         {!selectedFile ? (
           <>
             <div className="upload-icon">ZIP</div>
@@ -117,6 +105,15 @@ export function UploadPanel(props: UploadPanelProps) {
               <strong>{selectedFile.name}</strong>
               <p>{formatBytes(selectedFile.size)}</p>
             </div>
+            <button
+              type="button"
+              className="upload-clear-button"
+              onClick={handleClear}
+              disabled={disabled}
+              aria-label="清除已选文件"
+            >
+              ×
+            </button>
           </>
         )}
       </div>
