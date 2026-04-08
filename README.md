@@ -1,73 +1,53 @@
-# React + TypeScript + Vite
+# GhostPCB Web
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+纯前端本地版 GhostPCB。当前实现遵循 `./dev-docs` 约束：
 
-Currently, two official plugins are available:
+- React + TypeScript + Vite
+- Web Worker 执行 ZIP 解包、Gerber 处理和重打包
+- 第一阶段只实现真实启用能力：
+  - 丝印层统一轻微平移
+  - 非 EasyEDA 文件头注入
+  - 非钻孔文件 LCEDA 风格签名注入
+  - 多结果 ZIP 生成与下载
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 开发命令
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+pnpm install
+pnpm dev
+pnpm build
+pnpm lint
+pnpm test
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 目录结构
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```text
+src/
+├─ app/
+├─ features/gerber-process/
+├─ core/
+│  ├─ gerber/
+│  ├─ random/
+│  └─ zip/
+├─ worker/
+└─ shared/
 ```
+
+## 当前行为说明
+
+- 输入：单个 `.zip` Gerber 压缩包，生成数量 `1-99`
+- 处理线程：全部在 Web Worker 中执行
+- 输出：`Gerber_PCB{序号}_YYYY-MM-DD.zip`
+- 未知文件：原样保留
+- 钻孔文件：不做头注入、不做签名注入、不做扰动
+
+## 测试覆盖
+
+已覆盖的关键点：
+
+- 文件类型识别
+- EasyEDA 来源检测
+- 丝印层位移且不改 `I/J`
+- LCEDA 风格签名注入
+- ZIP 输入到多 ZIP 输出的集成链路
