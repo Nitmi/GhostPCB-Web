@@ -92,6 +92,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
+  margin-left: auto;
   gap: 8px;
 }
 
@@ -115,9 +116,9 @@
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  border: 1px solid rgba(23, 78, 166, 0.14);
-  background: rgba(232, 242, 255, 0.72);
-  color: #174ea6;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: rgba(255, 255, 255, 0.9);
+  color: #111827;
   transition:
     transform 160ms ease,
     background 160ms ease,
@@ -126,7 +127,7 @@
 
 .window-icon-link:hover {
   transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(23, 78, 166, 0.12);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
 }
 
 .window-icon-link svg {
@@ -886,14 +887,21 @@
 
 @media (max-width: 820px) {
   .window-chrome {
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
   }
 
   .window-title {
-    order: 3;
+    grid-column: 1 / -1;
     width: 100%;
     justify-items: flex-start;
     margin: 0;
+  }
+
+  .window-toolbar {
+    margin-left: 0;
+    justify-self: end;
   }
 
   .sidebar-metrics,
