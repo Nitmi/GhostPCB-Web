@@ -45,7 +45,7 @@ export function ResultPanel(props: ResultPanelProps) {
             <p>
               {status === 'running'
                 ? '处理完成后，结果会以密集列表显示在这里。'
-                : '上传 ZIP 并开始处理后，下载列表会出现在这里。'}
+                : '上传 Gerber 并开始处理后，下载列表会出现在这里。'}
             </p>
           </div>
         ) : null}

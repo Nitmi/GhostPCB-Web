@@ -1,136 +1,140 @@
-import { useEffect, useRef, useState, startTransition } from 'react'
-import './app.css'
-import { ProcessForm } from '../features/gerber-process/ui/ProcessForm.tsx'
-import { ProgressBar } from '../features/gerber-process/ui/ProgressBar.tsx'
-import { ResultPanel } from '../features/gerber-process/ui/ResultPanel.tsx'
-import { UploadPanel } from '../features/gerber-process/ui/UploadPanel.tsx'
+import { useEffect, useRef, useState, startTransition } from "react";
+import "./app.css";
+import { ProcessForm } from "../features/gerber-process/ui/ProcessForm.tsx";
+import { ProgressBar } from "../features/gerber-process/ui/ProgressBar.tsx";
+import { ResultPanel } from "../features/gerber-process/ui/ResultPanel.tsx";
+import { UploadPanel } from "../features/gerber-process/ui/UploadPanel.tsx";
 import {
   createEmptyProgress,
   DEFAULT_COUNT,
-} from '../features/gerber-process/model/state.ts'
+} from "../features/gerber-process/model/state.ts";
 import type {
   DownloadableResult,
   ProcessStatus,
   ProgressState,
-} from '../features/gerber-process/model/types.ts'
+} from "../features/gerber-process/model/types.ts";
 import {
   normalizeCountInput,
   validateZipFile,
-} from '../features/gerber-process/model/validators.ts'
+} from "../features/gerber-process/model/validators.ts";
 import {
   createGerberProcessTask,
   getProcessErrorMessage,
-} from '../features/gerber-process/service/processClient.ts'
+} from "../features/gerber-process/service/processClient.ts";
 import {
   downloadAllResults,
   downloadResultFile,
-} from '../features/gerber-process/service/download.ts'
+} from "../features/gerber-process/service/download.ts";
 
 function App() {
-  const [count, setCount] = useState(DEFAULT_COUNT)
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [status, setStatus] = useState<ProcessStatus>('idle')
-  const [progress, setProgress] = useState<ProgressState>(createEmptyProgress())
-  const [results, setResults] = useState<DownloadableResult[]>([])
-  const [error, setError] = useState<string | null>(null)
-  const taskRef = useRef<ReturnType<typeof createGerberProcessTask> | null>(null)
+  const [count, setCount] = useState(DEFAULT_COUNT);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [status, setStatus] = useState<ProcessStatus>("idle");
+  const [progress, setProgress] = useState<ProgressState>(
+    createEmptyProgress(),
+  );
+  const [results, setResults] = useState<DownloadableResult[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const taskRef = useRef<ReturnType<typeof createGerberProcessTask> | null>(
+    null,
+  );
 
   useEffect(() => {
     return () => {
-      taskRef.current?.cancel()
-    }
-  }, [])
+      taskRef.current?.cancel();
+    };
+  }, []);
 
   const applySelectedFile = (file: File | null) => {
     if (!file) {
-      setSelectedFile(null)
-      setResults([])
-      setError(null)
-      setStatus('idle')
-      setProgress(createEmptyProgress())
-      return
+      setSelectedFile(null);
+      setResults([]);
+      setError(null);
+      setStatus("idle");
+      setProgress(createEmptyProgress());
+      return;
     }
 
-    const validation = validateZipFile(file)
+    const validation = validateZipFile(file);
     if (!validation.valid) {
-      setError(validation.message)
-      return
+      setError(validation.message);
+      return;
     }
 
-    setSelectedFile(file)
-    setResults([])
-    setError(null)
-    setStatus('idle')
-    setProgress(createEmptyProgress())
-  }
+    setSelectedFile(file);
+    setResults([]);
+    setError(null);
+    setStatus("idle");
+    setProgress(createEmptyProgress());
+  };
 
   const handleSubmit = async () => {
     if (!selectedFile) {
-      setError('请先选择一个 Gerber ZIP 文件。')
-      return
+      setError("请先选择一个 Gerber ZIP 文件。");
+      return;
     }
 
-    const normalizedCount = normalizeCountInput(count)
-    setCount(normalizedCount)
-    setStatus('running')
-    setError(null)
-    setResults([])
+    const normalizedCount = normalizeCountInput(count);
+    setCount(normalizedCount);
+    setStatus("running");
+    setError(null);
+    setResults([]);
     setProgress({
-      phase: 'preparing',
+      phase: "preparing",
       percent: 2,
       current: 0,
       total: normalizedCount,
-      message: '正在启动本地处理任务',
-    })
+      message: "正在启动本地处理任务",
+    });
 
     const task = createGerberProcessTask({
       file: selectedFile,
       count: normalizedCount,
       onProgress: setProgress,
-    })
+    });
 
-    taskRef.current = task
+    taskRef.current = task;
 
     try {
-      const nextResults = await task.promise
+      const nextResults = await task.promise;
       startTransition(() => {
-        setResults(nextResults)
-        setStatus('success')
+        setResults(nextResults);
+        setStatus("success");
         setProgress({
-          phase: 'complete',
+          phase: "complete",
           percent: 100,
           current: nextResults.length,
           total: nextResults.length,
           message: `已生成 ${nextResults.length} 个结果包`,
-        })
-      })
+        });
+      });
     } catch (processError) {
-      setStatus('error')
-      setError(getProcessErrorMessage(processError))
+      setStatus("error");
+      setError(getProcessErrorMessage(processError));
     } finally {
-      taskRef.current = null
+      taskRef.current = null;
     }
-  }
+  };
 
   const handleCancel = () => {
-    taskRef.current?.cancel()
-    taskRef.current = null
-    setStatus('idle')
-    setProgress(createEmptyProgress())
-    setError('任务已取消。')
-  }
+    taskRef.current?.cancel();
+    taskRef.current = null;
+    setStatus("idle");
+    setProgress(createEmptyProgress());
+    setError("任务已取消。");
+  };
 
-  const isRunning = status === 'running'
-  const outputCount = results.length
-  const fileLabel = selectedFile ? selectedFile.name : '未选择 ZIP'
+  const isRunning = status === "running";
+  const outputCount = results.length;
+  const fileLabel = selectedFile ? selectedFile.name : "未选择 ZIP";
   const statusLabel =
-    status === 'running'
-      ? '处理中'
-      : status === 'success'
-        ? '已完成'
-        : status === 'error'
-          ? '异常'
-          : '待开始'
+    status === "running"
+      ? "处理中"
+      : status === "success"
+        ? "已完成"
+        : status === "error"
+          ? "异常"
+          : "待开始";
 
   return (
     <main className="app-shell">
@@ -170,7 +174,7 @@ function App() {
                 </div>
               </div>
               <p className="sidebar-description">
-                上传 ZIP，设置数量，直接生成并下载结果包。
+                异化 Gerber 文件，但生产出来是同样的 PCB。
               </p>
             </div>
 
@@ -196,8 +200,8 @@ function App() {
               disabled={!selectedFile || isRunning}
               isRunning={isRunning}
               onCountChange={(value) => {
-                setCount(value)
-                setError(null)
+                setCount(value);
+                setError(null);
               }}
               onSubmit={handleSubmit}
               onCancel={handleCancel}
@@ -224,7 +228,10 @@ function App() {
               </div>
             </div>
 
-            <ProgressBar progress={progress} active={isRunning || status === 'success'} />
+            <ProgressBar
+              progress={progress}
+              active={isRunning || status === "success"}
+            />
             <ResultPanel
               status={status}
               error={error}
@@ -236,7 +243,7 @@ function App() {
         </section>
       </section>
     </main>
-  )
+  );
 }
 
-export default App
+export default App;
