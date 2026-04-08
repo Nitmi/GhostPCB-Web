@@ -2,7 +2,7 @@
 
 一个 Gerber ZIP 文件指纹混淆工具的纯前端 Web 版。异化 Gerber 文件，但生产出来是同样的 PCB。
 
-<img src="docs/sreenshot.jpg" alt="应用截图" width="1200" />
+<img src="docs/screenshot.png" alt="应用截图" width="1200" />
 
 ## 技术栈
 
