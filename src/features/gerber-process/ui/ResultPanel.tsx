@@ -52,10 +52,7 @@ export function ResultPanel(props: ResultPanelProps) {
         ) : null}
 
         {results.length > 0 ? (
-          <div
-            className="finder-list"
-            data-single={results.length === 1}
-          >
+          <div className="finder-list" data-single={results.length === 1}>
             <div className="finder-header" aria-hidden="true">
               <span>名称</span>
               <span>大小</span>
@@ -66,7 +63,6 @@ export function ResultPanel(props: ResultPanelProps) {
                   <div className="finder-name">
                     <div>
                       <strong>{result.fileName}</strong>
-                      <div className="result-meta">Gerber Archive</div>
                     </div>
                   </div>
                   <div className="finder-size">{formatBytes(result.size)}</div>
