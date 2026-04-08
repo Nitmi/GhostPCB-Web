@@ -126,7 +126,7 @@ function App() {
 
   const isRunning = status === "running";
   const outputCount = results.length;
-  const fileLabel = selectedFile ? selectedFile.name : "未选择 ZIP";
+  const fileLabel = selectedFile ? selectedFile.name : "未选择 Gerber";
   const statusLabel =
     status === "running"
       ? "处理中"

@@ -1,4 +1,10 @@
-import { useId, useState, type ChangeEvent, type DragEvent } from "react";
+import {
+  useRef,
+  useState,
+  type ChangeEvent,
+  type DragEvent,
+  type MouseEvent,
+} from "react";
 import { formatBytes } from "../../../shared/utils/format.ts";
 
 interface UploadPanelProps {
@@ -10,7 +16,7 @@ interface UploadPanelProps {
 
 export function UploadPanel(props: UploadPanelProps) {
   const { selectedFile, disabled, onFileSelected, onClearFile } = props;
-  const inputId = useId();
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const [dragging, setDragging] = useState(false);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -19,7 +25,7 @@ export function UploadPanel(props: UploadPanelProps) {
     event.target.value = "";
   };
 
-  const handleDrop = (event: DragEvent<HTMLLabelElement>) => {
+  const handleDrop = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setDragging(false);
 
@@ -31,10 +37,21 @@ export function UploadPanel(props: UploadPanelProps) {
     onFileSelected(file);
   };
 
+  const openFilePicker = () => {
+    if (!disabled) {
+      inputRef.current?.click();
+    }
+  };
+
+  const handleClear = (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    onClearFile();
+  };
+
   return (
     <section className="panel panel-strong upload-panel">
       <input
-        id={inputId}
+        ref={inputRef}
         className="sr-only-input"
         type="file"
         accept=".zip"
@@ -50,53 +67,59 @@ export function UploadPanel(props: UploadPanelProps) {
         <span className="muted-chip">Local Only</span>
       </div>
 
-      {!selectedFile ? (
-        <label
-          className="upload-dropzone"
-          htmlFor={inputId}
-          data-dragging={dragging}
-          data-disabled={disabled}
-          onDragOver={(event) => {
+      <div
+        className="upload-dropzone"
+        role="button"
+        tabIndex={disabled ? -1 : 0}
+        data-dragging={dragging}
+        data-disabled={disabled}
+        data-selected={Boolean(selectedFile)}
+        onClick={openFilePicker}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
             event.preventDefault();
-            if (!disabled) {
-              setDragging(true);
-            }
-          }}
-          onDragLeave={() => setDragging(false)}
-          onDrop={handleDrop}
-        >
-          <div className="upload-icon">ZIP</div>
-          <div className="upload-copy">
-            <strong>拖入 Gerber</strong>
-            <p>或点击选择文件</p>
-          </div>
-        </label>
-      ) : null}
+            openFilePicker();
+          }
+        }}
+        onDragOver={(event) => {
+          event.preventDefault();
+          if (!disabled) {
+            setDragging(true);
+          }
+        }}
+        onDragLeave={() => setDragging(false)}
+        onDrop={handleDrop}
+      >
+        {selectedFile ? (
+          <button
+            type="button"
+            className="upload-clear-button"
+            onClick={handleClear}
+            disabled={disabled}
+            aria-label="清除已选文件"
+          >
+            ×
+          </button>
+        ) : null}
 
-      {selectedFile ? (
-        <div className="upload-selected">
-          <div className="upload-selected-head">
-            <img className="upload-selected-icon" src="/icon.png" alt="" />
-            <div>
-              <strong>{selectedFile.name}</strong>
-              <div className="file-meta">{formatBytes(selectedFile.size)}</div>
+        {!selectedFile ? (
+          <>
+            <div className="upload-icon">ZIP</div>
+            <div className="upload-copy">
+              <strong>拖入 Gerber</strong>
+              <p>或点击选择文件</p>
             </div>
-          </div>
-          <div className="upload-actions">
-            <label className="ghost-button" htmlFor={inputId}>
-              重新选择
-            </label>
-            <button
-              type="button"
-              className="ghost-button"
-              onClick={onClearFile}
-              disabled={disabled}
-            >
-              清除文件
-            </button>
-          </div>
-        </div>
-      ) : null}
+          </>
+        ) : (
+          <>
+            <img className="upload-selected-icon" src="/icon.png" alt="" />
+            <div className="upload-copy upload-selected-copy">
+              <strong>{selectedFile.name}</strong>
+              <p>{formatBytes(selectedFile.size)}</p>
+            </div>
+          </>
+        )}
+      </div>
     </section>
   );
 }
