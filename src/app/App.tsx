@@ -150,11 +150,6 @@ function App() {
             </div>
           </div>
 
-          <div className="window-title">
-            <strong>GhostPCB Web</strong>
-            <span>Local Gerber Obfuscation Tool</span>
-          </div>
-
           <div className="window-toolbar">
             <a
               className="window-icon-link"
@@ -176,18 +171,8 @@ function App() {
 
         <section id="workspace" className="workspace-body">
           <aside className="workspace-sidebar">
-            <div className="sidebar-head">
-              <p className="eyebrow">Tool Workspace</p>
-              <div className="brand-lockup">
-                <span className="brand-mark">G</span>
-                <div>
-                  <strong>GhostPCB</strong>
-                  <span>Gerber ZIP 本地处理</span>
-                </div>
-              </div>
-              <p className="sidebar-description">
-                异化 Gerber 文件，但生产出来是同样的 PCB。
-              </p>
+            <div className="sidebar-intro">
+              <p>单次导入一个 Gerber ZIP，在浏览器内完成处理并直接下载结果。</p>
             </div>
 
             <div className="sidebar-metrics">
@@ -231,11 +216,7 @@ function App() {
                 <strong>{outputCount}</strong>
               </div>
               <div className="summary-card">
-                <span>输出模式</span>
-                <strong>ZIP Download</strong>
-              </div>
-              <div className="summary-card">
-                <span>策略范围</span>
+                <span>处理范围</span>
                 <strong>Silkscreen + Header + Signature</strong>
               </div>
             </div>
