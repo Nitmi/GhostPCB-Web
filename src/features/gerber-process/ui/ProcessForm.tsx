@@ -16,6 +16,14 @@ export function ProcessForm(props: ProcessFormProps) {
   const { count, disabled, isRunning, onCountChange, onSubmit, onCancel } =
     props;
 
+  const decreaseCount = () => {
+    onCountChange(Math.max(MIN_PROCESS_COUNT, count - 1));
+  };
+
+  const increaseCount = () => {
+    onCountChange(Math.min(MAX_PROCESS_COUNT, count + 1));
+  };
+
   return (
     <section className="panel panel-muted control-panel">
       <div className="panel-head">
@@ -28,13 +36,33 @@ export function ProcessForm(props: ProcessFormProps) {
       <div className="form-grid">
         <label className="field-label">
           生成数量
-          <input
-            type="number"
-            min={MIN_PROCESS_COUNT}
-            max={MAX_PROCESS_COUNT}
-            value={count}
-            onChange={(event) => onCountChange(Number(event.target.value))}
-          />
+          <div className="stepper-input">
+            <button
+              type="button"
+              className="stepper-button"
+              onClick={decreaseCount}
+              disabled={disabled || count <= MIN_PROCESS_COUNT}
+              aria-label="减少生成数量"
+            >
+              −
+            </button>
+            <input
+              type="number"
+              min={MIN_PROCESS_COUNT}
+              max={MAX_PROCESS_COUNT}
+              value={count}
+              onChange={(event) => onCountChange(Number(event.target.value))}
+            />
+            <button
+              type="button"
+              className="stepper-button"
+              onClick={increaseCount}
+              disabled={disabled || count >= MAX_PROCESS_COUNT}
+              aria-label="增加生成数量"
+            >
+              +
+            </button>
+          </div>
         </label>
         <div className="form-actions">
           <button

@@ -99,7 +99,6 @@ export function UploadPanel(props: UploadPanelProps) {
           </>
         ) : (
           <>
-            <img className="upload-selected-icon" src="/icon.png" alt="" />
             <div className="upload-copy upload-selected-copy">
               <strong>{selectedFile.name}</strong>
               <p>{formatBytes(selectedFile.size)}</p>
