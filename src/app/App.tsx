@@ -25,6 +25,12 @@ import {
   downloadAllResults,
   downloadResultFile,
 } from "../features/gerber-process/service/download.ts";
+import { downloadGhostPcbClient } from "../shared/services/clientDownload.ts";
+
+function isMobilePlatform() {
+  const userAgent = navigator.userAgent.toLowerCase();
+  return /android|iphone|ipad|ipod|mobile/.test(userAgent);
+}
 
 function App() {
   const [count, setCount] = useState(DEFAULT_COUNT);
@@ -35,11 +41,18 @@ function App() {
   );
   const [results, setResults] = useState<DownloadableResult[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [isDownloadingClient, setIsDownloadingClient] = useState(false);
+  const [clientDownloadError, setClientDownloadError] = useState<string | null>(
+    null,
+  );
+  const [showClientDownload, setShowClientDownload] = useState(false);
   const taskRef = useRef<ReturnType<typeof createGerberProcessTask> | null>(
     null,
   );
 
   useEffect(() => {
+    setShowClientDownload(!isMobilePlatform());
+
     return () => {
       taskRef.current?.cancel();
     };
@@ -124,6 +137,23 @@ function App() {
     setError("任务已取消。");
   };
 
+  const handleClientDownload = async () => {
+    setIsDownloadingClient(true);
+    setClientDownloadError(null);
+
+    try {
+      await downloadGhostPcbClient();
+    } catch (downloadError) {
+      setClientDownloadError(
+        downloadError instanceof Error
+          ? downloadError.message
+          : "客户端下载暂时不可用。",
+      );
+    } finally {
+      setIsDownloadingClient(false);
+    }
+  };
+
   const isRunning = status === "running";
   return (
     <main className="app-shell">
@@ -140,6 +170,17 @@ function App() {
           </div>
 
           <div className="window-toolbar">
+            {showClientDownload ? (
+              <button
+                type="button"
+                className="window-download-button"
+                onClick={handleClientDownload}
+                disabled={isDownloadingClient}
+                title="自动探测可用下载源并下载 GhostPCB 客户端"
+              >
+                {isDownloadingClient ? "检测中..." : "下载客户端"}
+              </button>
+            ) : null}
             <a
               className="window-icon-link"
               href="https://github.com/Nitmi/GhostPCB-Web"
@@ -192,6 +233,10 @@ function App() {
             />
           </section>
         </section>
+
+        {clientDownloadError ? (
+          <div className="window-inline-error">{clientDownloadError}</div>
+        ) : null}
 
         <footer className="app-disclaimer">
           <span className="app-disclaimer-icon" aria-hidden="true">
