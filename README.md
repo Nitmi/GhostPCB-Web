@@ -2,6 +2,9 @@
 
 一个 Gerber ZIP 文件指纹混淆工具的纯前端 Web 版。异化 Gerber 文件，但生产出来是同样的 PCB。
 
+客户端版：
+[GhostPCB](https://github.com/Nitmi/GhostPCB)
+
 <img src="docs/screenshot.png" alt="应用截图" width="1200" />
 
 ## 技术栈
@@ -37,10 +40,7 @@
 ## 部署
 
 ### Vercel 一键部署
-
-点击上方按钮即可直接部署到 Vercel：
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Nitmi/GhostPCB-Web&project-name=ghostpcb-web)
+点击顶部按钮即可直接部署到 Vercel。
 
 ### 本地运行
 
