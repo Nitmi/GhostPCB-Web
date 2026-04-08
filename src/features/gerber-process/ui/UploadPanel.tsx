@@ -62,9 +62,8 @@ export function UploadPanel(props: UploadPanelProps) {
       <div className="panel-head">
         <div>
           <h2>输入 Gerber</h2>
-          <p>仅支持一次处理一个 Gerber 压缩包，文件只会在本地浏览器内处理。</p>
+          <p>仅支持一次处理一个 Gerber</p>
         </div>
-        <span className="muted-chip">Local Only</span>
       </div>
 
       <div

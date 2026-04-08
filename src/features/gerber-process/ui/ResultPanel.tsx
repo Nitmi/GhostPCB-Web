@@ -1,23 +1,23 @@
-import { formatBytes } from '../../../shared/utils/format.ts'
-import type { DownloadableResult, ProcessStatus } from '../model/types.ts'
+import { formatBytes } from "../../../shared/utils/format.ts";
+import type { DownloadableResult, ProcessStatus } from "../model/types.ts";
 
 interface ResultPanelProps {
-  status: ProcessStatus
-  error: string | null
-  results: DownloadableResult[]
-  onDownloadAll: () => void
-  onDownloadOne: (result: DownloadableResult) => void
+  status: ProcessStatus;
+  error: string | null;
+  results: DownloadableResult[];
+  onDownloadAll: () => void;
+  onDownloadOne: (result: DownloadableResult) => void;
 }
 
 export function ResultPanel(props: ResultPanelProps) {
-  const { status, error, results, onDownloadAll, onDownloadOne } = props
+  const { status, error, results, onDownloadAll, onDownloadOne } = props;
 
   return (
     <section className="panel panel-dark result-panel">
       <div className="panel-head">
         <div>
           <h2>输出结果</h2>
-          <p>生成后可逐个或全部下载。</p>
+          <p>生成后可逐个或全部下载</p>
         </div>
         <div className="result-actions">
           <button
@@ -38,14 +38,16 @@ export function ResultPanel(props: ResultPanelProps) {
           </div>
         ) : null}
 
-      {!error && results.length === 0 ? (
-        <div className="results-empty" data-running={status === 'running'}>
-          <img className="results-empty-icon" src="/icon.png" alt="" />
-          <strong>{status === 'running' ? '正在准备结果包' : '尚未生成结果'}</strong>
+        {!error && results.length === 0 ? (
+          <div className="results-empty" data-running={status === "running"}>
+            <img className="results-empty-icon" src="/icon.png" alt="" />
+            <strong>
+              {status === "running" ? "正在准备结果包" : "尚未生成结果"}
+            </strong>
             <p>
-              {status === 'running'
-                ? '处理完成后，结果会以密集列表显示在这里。'
-                : '上传 Gerber 并开始处理后，下载列表会出现在这里。'}
+              {status === "running"
+                ? "处理完成后，结果会以密集列表显示在这里。"
+                : "上传 Gerber 并开始处理后，下载列表会出现在这里。"}
             </p>
           </div>
         ) : null}
@@ -122,9 +124,8 @@ export function ResultPanel(props: ResultPanelProps) {
       </div>
 
       <footer className="result-panel-footer">
-        <span>ZIP 解析、文本处理、重打包均在 Worker 中执行。</span>
-        <span>未知文件原样保留，钻孔文件不注入头和签名。</span>
+        <span>ZIP 解析、文本处理、重打包均在本地离线进行。</span>
       </footer>
     </section>
-  )
+  );
 }

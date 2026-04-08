@@ -125,17 +125,6 @@ function App() {
   };
 
   const isRunning = status === "running";
-  const outputCount = results.length;
-  const fileLabel = selectedFile ? selectedFile.name : "未选择 Gerber";
-  const statusLabel =
-    status === "running"
-      ? "处理中"
-      : status === "success"
-        ? "已完成"
-        : status === "error"
-          ? "异常"
-          : "待开始";
-
   return (
     <main className="app-shell">
       <section className="app-window">
@@ -146,7 +135,7 @@ function App() {
             <img className="window-app-icon" src="/icon.png" alt="" />
             <div className="window-app-copy">
               <strong>GhostPCB</strong>
-              <span>Local Gerber Processor</span>
+              <span>异化 Gerber 文件，但生产出来是同样的 PCB。</span>
             </div>
           </div>
 
@@ -171,24 +160,6 @@ function App() {
 
         <section id="workspace" className="workspace-body">
           <aside className="workspace-sidebar">
-            <div className="sidebar-intro">
-              <p>
-                Gerber 混淆工具 Web 版，异化 Gerber 文件，但生产出来是同样的
-                PCB。
-              </p>
-            </div>
-
-            <div className="sidebar-metrics">
-              <div className="metric-item">
-                <span>输入文件</span>
-                <strong>{fileLabel}</strong>
-              </div>
-              <div className="metric-item">
-                <span>生成数量</span>
-                <strong>{count}</strong>
-              </div>
-            </div>
-
             <UploadPanel
               selectedFile={selectedFile}
               disabled={isRunning}
@@ -209,24 +180,8 @@ function App() {
           </aside>
 
           <section className="workspace-main">
-            <div className="main-summary">
-              <div className="summary-card">
-                <span>状态</span>
-                <strong>{statusLabel}</strong>
-              </div>
-              <div className="summary-card">
-                <span>结果数量</span>
-                <strong>{outputCount}</strong>
-              </div>
-              <div className="summary-card">
-                <span>处理范围</span>
-                <strong>Silkscreen + Header + Signature</strong>
-              </div>
-            </div>
-
             <ProgressBar
               progress={progress}
-              active={isRunning || status === "success"}
             />
             <ResultPanel
               status={status}
@@ -237,6 +192,13 @@ function App() {
             />
           </section>
         </section>
+
+        <footer className="app-disclaimer">
+          <span className="app-disclaimer-icon" aria-hidden="true">
+            !
+          </span>
+          此软件仅供个人学习使用，不可用于商业用途！严禁用于破解嘉立创免费打样的拆单检测！
+        </footer>
       </section>
     </main>
   );
