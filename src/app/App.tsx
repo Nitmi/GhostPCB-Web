@@ -138,15 +138,17 @@ function App() {
         <div className="surface-noise" aria-hidden="true" />
 
         <header className="window-chrome">
-          <div className="traffic-lights" aria-hidden="true">
-            <span className="traffic-light close" />
-            <span className="traffic-light minimize" />
-            <span className="traffic-light zoom" />
+          <div className="window-app">
+            <img className="window-app-icon" src="/icon.png" alt="" />
+            <div className="window-app-copy">
+              <strong>GhostPCB</strong>
+              <span>Local Gerber Processor</span>
+            </div>
           </div>
 
           <div className="window-title">
-            <strong>GhostPCB</strong>
-            <span>Local Gerber Processor</span>
+            <strong>Workspace</strong>
+            <span>Gerber ZIP Obfuscation Tool</span>
           </div>
 
           <div className="window-toolbar">
@@ -216,11 +218,11 @@ function App() {
                 <span>输出模式</span>
                 <strong>ZIP Download</strong>
               </div>
-              <div className="summary-card">
-                <span>策略范围</span>
-                <strong>Silkscreen + Header + Signature</strong>
-              </div>
+            <div className="summary-card">
+              <span>策略范围</span>
+              <strong>Silkscreen + Header + Signature</strong>
             </div>
+          </div>
 
             <ProgressBar progress={progress} active={isRunning || status === 'success'} />
             <ResultPanel

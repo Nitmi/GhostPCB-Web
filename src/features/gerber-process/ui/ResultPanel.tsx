@@ -44,16 +44,25 @@ export function ResultPanel(props: ResultPanelProps) {
       ) : null}
 
       {results.length > 0 ? (
-        <div className="result-list" style={{ marginTop: 18 }}>
+        <div className="finder-list" style={{ marginTop: 14 }}>
+          <div className="finder-header" aria-hidden="true">
+            <span>名称</span>
+            <span>大小</span>
+            <span>操作</span>
+          </div>
           {results.map((result) => (
-            <article key={result.fileName} className="result-item">
-              <div>
-                <strong>{result.fileName}</strong>
-                <div className="result-meta">{formatBytes(result.size)}</div>
+            <article key={result.fileName} className="finder-row">
+              <div className="finder-name">
+                <img className="finder-file-icon" src="/icon.png" alt="" />
+                <div>
+                  <strong>{result.fileName}</strong>
+                  <div className="result-meta">Gerber Archive</div>
+                </div>
               </div>
+              <div className="finder-size">{formatBytes(result.size)}</div>
               <button
                 type="button"
-                className="ghost-button"
+                className="ghost-button finder-action"
                 onClick={() => onDownloadOne(result)}
               >
                 下载 ZIP
