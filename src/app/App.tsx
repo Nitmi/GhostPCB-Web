@@ -154,7 +154,7 @@ function App() {
           <div className="window-toolbar">
             <span className="window-chip">Local</span>
             <span className="window-chip">Worker</span>
-            <span className="window-chip">{statusLabel}</span>
+            <span className="window-chip status-chip">{statusLabel}</span>
           </div>
         </header>
 
@@ -218,11 +218,11 @@ function App() {
                 <span>输出模式</span>
                 <strong>ZIP Download</strong>
               </div>
-            <div className="summary-card">
-              <span>策略范围</span>
-              <strong>Silkscreen + Header + Signature</strong>
+              <div className="summary-card">
+                <span>策略范围</span>
+                <strong>Silkscreen + Header + Signature</strong>
+              </div>
             </div>
-          </div>
 
             <ProgressBar progress={progress} active={isRunning || status === 'success'} />
             <ResultPanel
@@ -232,11 +232,6 @@ function App() {
               onDownloadAll={() => downloadAllResults(results)}
               onDownloadOne={(result) => downloadResultFile(result)}
             />
-
-            <footer className="workspace-footer">
-              <span>ZIP 解析、文本处理、重打包均在 Worker 中执行。</span>
-              <span>未知文件原样保留，钻孔文件不注入头和签名。</span>
-            </footer>
           </section>
         </section>
       </section>
