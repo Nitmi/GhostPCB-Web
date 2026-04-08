@@ -108,10 +108,30 @@
   font-size: 0.72rem;
 }
 
-.status-chip {
-  background: linear-gradient(180deg, rgba(56, 189, 248, 0.24), rgba(59, 130, 246, 0.16));
-  border-color: rgba(59, 130, 246, 0.2);
-  color: #163b79;
+.window-icon-link {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid rgba(23, 78, 166, 0.14);
+  background: rgba(232, 242, 255, 0.72);
+  color: #174ea6;
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.window-icon-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(23, 78, 166, 0.12);
+}
+
+.window-icon-link svg {
+  width: 16px;
+  height: 16px;
 }
 
 .workspace-body {
