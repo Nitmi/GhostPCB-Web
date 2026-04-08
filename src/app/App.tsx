@@ -134,50 +134,55 @@ function App() {
 
   return (
     <main className="app-shell">
-      <section className="app-surface">
+      <section className="app-window">
         <div className="surface-noise" aria-hidden="true" />
 
-        <header className="workspace-header">
-          <div className="brand-lockup">
-            <span className="brand-mark">G</span>
-            <div>
-              <strong>GhostPCB</strong>
-              <span>Local Gerber Processor</span>
-            </div>
+        <header className="window-chrome">
+          <div className="traffic-lights" aria-hidden="true">
+            <span className="traffic-light close" />
+            <span className="traffic-light minimize" />
+            <span className="traffic-light zoom" />
           </div>
-          <div className="workspace-header-meta">
-            <span>Local only</span>
-            <span>Worker enabled</span>
+
+          <div className="window-title">
+            <strong>GhostPCB</strong>
+            <span>Local Gerber Processor</span>
+          </div>
+
+          <div className="window-toolbar">
+            <span className="window-chip">Local</span>
+            <span className="window-chip">Worker</span>
+            <span className="window-chip">{statusLabel}</span>
           </div>
         </header>
 
-        <div className="overview-bar">
-          <div className="overview-copy">
-            <p className="eyebrow">Workspace</p>
-            <h1>Gerber ZIP 本地处理</h1>
-            <p>
-              直接上传压缩包、设置输出数量，然后生成并下载结果 ZIP。所有处理都在浏览器本地完成。
-            </p>
-          </div>
+        <section id="workspace" className="workspace-body">
+          <aside className="workspace-sidebar">
+            <div className="sidebar-head">
+              <p className="eyebrow">Tool Workspace</p>
+              <div className="brand-lockup">
+                <span className="brand-mark">G</span>
+                <div>
+                  <strong>GhostPCB</strong>
+                  <span>Gerber ZIP 本地处理</span>
+                </div>
+              </div>
+              <p className="sidebar-description">
+                上传 ZIP，设置数量，直接生成并下载结果包。
+              </p>
+            </div>
 
-          <div className="overview-metrics">
-            <div className="metric-item">
-              <span>状态</span>
-              <strong>{statusLabel}</strong>
+            <div className="sidebar-metrics">
+              <div className="metric-item">
+                <span>输入文件</span>
+                <strong>{fileLabel}</strong>
+              </div>
+              <div className="metric-item">
+                <span>生成数量</span>
+                <strong>{count}</strong>
+              </div>
             </div>
-            <div className="metric-item">
-              <span>输入文件</span>
-              <strong>{fileLabel}</strong>
-            </div>
-            <div className="metric-item">
-              <span>结果数量</span>
-              <strong>{outputCount}</strong>
-            </div>
-          </div>
-        </div>
 
-        <section id="workspace" className="workspace-section">
-          <div className="stack-column">
             <UploadPanel
               selectedFile={selectedFile}
               disabled={isRunning}
@@ -195,9 +200,28 @@ function App() {
               onSubmit={handleSubmit}
               onCancel={handleCancel}
             />
-          </div>
+          </aside>
 
-          <div className="stack-column">
+          <section className="workspace-main">
+            <div className="main-summary">
+              <div className="summary-card">
+                <span>状态</span>
+                <strong>{statusLabel}</strong>
+              </div>
+              <div className="summary-card">
+                <span>结果数量</span>
+                <strong>{outputCount}</strong>
+              </div>
+              <div className="summary-card">
+                <span>输出模式</span>
+                <strong>ZIP Download</strong>
+              </div>
+              <div className="summary-card">
+                <span>策略范围</span>
+                <strong>Silkscreen + Header + Signature</strong>
+              </div>
+            </div>
+
             <ProgressBar progress={progress} active={isRunning || status === 'success'} />
             <ResultPanel
               status={status}
@@ -206,13 +230,13 @@ function App() {
               onDownloadAll={() => downloadAllResults(results)}
               onDownloadOne={(result) => downloadResultFile(result)}
             />
-          </div>
-        </section>
 
-        <footer className="workspace-footer">
-          <span>ZIP 解析、文本处理、重打包均在 Worker 中执行。</span>
-          <span>未知文件原样保留，钻孔文件不注入头和签名。</span>
-        </footer>
+            <footer className="workspace-footer">
+              <span>ZIP 解析、文本处理、重打包均在 Worker 中执行。</span>
+              <span>未知文件原样保留，钻孔文件不注入头和签名。</span>
+            </footer>
+          </section>
+        </section>
       </section>
     </main>
   )

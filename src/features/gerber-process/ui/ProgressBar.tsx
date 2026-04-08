@@ -13,7 +13,7 @@ export function ProgressBar(props: ProgressBarProps) {
       <div className="panel-head">
         <div>
           <h2>处理进度</h2>
-          <p>ZIP 解包、Gerber 处理和重打包都在 Worker 中执行，主线程只负责展示状态。</p>
+          <p>主线程只负责展示状态。</p>
         </div>
         <span className="muted-chip">{active ? `${progress.percent}%` : 'Idle'}</span>
       </div>

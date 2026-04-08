@@ -17,7 +17,7 @@ export function ResultPanel(props: ResultPanelProps) {
       <div className="panel-head">
         <div>
           <h2>输出结果</h2>
-          <p>生成完成后可逐个下载，也可以一次性触发全部 ZIP 下载。</p>
+          <p>生成后可逐个或全部下载。</p>
         </div>
         <div className="result-actions">
           <button

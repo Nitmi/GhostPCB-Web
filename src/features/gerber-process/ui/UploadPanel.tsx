@@ -63,9 +63,9 @@ export function UploadPanel(props: UploadPanelProps) {
           onChange={handleInputChange}
         />
         <div className="upload-icon">ZIP</div>
-        <div>
-          <strong>拖入 Gerber ZIP</strong>
-          <p>或点击这里选择文件</p>
+        <div className="upload-copy">
+          <strong>拖入 ZIP</strong>
+          <p>或点击选择文件</p>
         </div>
       </label>
 

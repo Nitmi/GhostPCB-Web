@@ -20,7 +20,7 @@ export function ProcessForm(props: ProcessFormProps) {
       <div className="panel-head">
         <div>
           <h2>处理参数</h2>
-          <p>第一期只开放真实启用的策略，生成数量范围为 1 到 99。</p>
+          <p>生成数量范围 1 到 99。</p>
         </div>
         <span className="muted-chip">Worker Pipeline</span>
       </div>
@@ -37,7 +37,7 @@ export function ProcessForm(props: ProcessFormProps) {
           />
         </label>
         <div className="field-hint">
-          每个结果包都会重新执行完整处理，不会简单复制同一份 ZIP 改名。
+          每个结果包都会重新执行完整处理。
         </div>
         <div className="form-actions">
           <button type="button" className="primary-button" disabled={disabled} onClick={onSubmit}>
