@@ -38,10 +38,10 @@ export function ResultPanel(props: ResultPanelProps) {
           </div>
         ) : null}
 
-        {!error && results.length === 0 ? (
-          <div className="results-empty" data-running={status === 'running'}>
-            <img className="results-empty-icon" src="/icon.png" alt="" />
-            <strong>{status === 'running' ? '正在准备结果包' : '尚未生成结果'}</strong>
+      {!error && results.length === 0 ? (
+        <div className="results-empty" data-running={status === 'running'}>
+          <img className="results-empty-icon" src="/icon.png" alt="" />
+          <strong>{status === 'running' ? '正在准备结果包' : '尚未生成结果'}</strong>
             <p>
               {status === 'running'
                 ? '处理完成后，结果会以密集列表显示在这里。'
@@ -50,7 +50,46 @@ export function ResultPanel(props: ResultPanelProps) {
           </div>
         ) : null}
 
-        {results.length > 0 ? (
+        {results.length === 1 ? (
+          <div className="result-focus">
+            <div className="result-focus-card">
+              <div className="result-focus-head">
+                <img className="result-focus-icon" src="/icon.png" alt="" />
+                <div>
+                  <strong>{results[0].fileName}</strong>
+                  <p>已生成 1 个结果包，可直接下载。</p>
+                </div>
+              </div>
+
+              <div className="result-focus-meta">
+                <div>
+                  <span>文件类型</span>
+                  <strong>Gerber Archive</strong>
+                </div>
+                <div>
+                  <span>文件大小</span>
+                  <strong>{formatBytes(results[0].size)}</strong>
+                </div>
+                <div>
+                  <span>输出模式</span>
+                  <strong>ZIP Download</strong>
+                </div>
+              </div>
+
+              <div className="result-focus-actions">
+                <button
+                  type="button"
+                  className="secondary-button"
+                  onClick={() => onDownloadOne(results[0])}
+                >
+                  下载 ZIP
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : null}
+
+        {results.length > 1 ? (
           <div className="finder-list">
             <div className="finder-header" aria-hidden="true">
               <span>名称</span>
