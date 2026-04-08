@@ -6,11 +6,10 @@ interface ResultPanelProps {
   error: string | null;
   results: DownloadableResult[];
   onDownloadAll: () => void;
-  onDownloadOne: (result: DownloadableResult) => void;
 }
 
 export function ResultPanel(props: ResultPanelProps) {
-  const { status, error, results, onDownloadAll, onDownloadOne } = props;
+  const { status, error, results, onDownloadAll } = props;
 
   return (
     <section className="panel panel-dark result-panel">
@@ -60,7 +59,6 @@ export function ResultPanel(props: ResultPanelProps) {
             <div className="finder-header" aria-hidden="true">
               <span>名称</span>
               <span>大小</span>
-              <span>操作</span>
             </div>
             <div className="finder-scroll">
               {results.map((result) => (
@@ -72,13 +70,6 @@ export function ResultPanel(props: ResultPanelProps) {
                     </div>
                   </div>
                   <div className="finder-size">{formatBytes(result.size)}</div>
-                  <button
-                    type="button"
-                    className="ghost-button finder-action"
-                    onClick={() => onDownloadOne(result)}
-                  >
-                    下载 ZIP
-                  </button>
                 </article>
               ))}
             </div>

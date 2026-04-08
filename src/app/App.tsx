@@ -23,7 +23,6 @@ import {
 } from "../features/gerber-process/service/processClient.ts";
 import {
   downloadAllResults,
-  downloadResultFile,
 } from "../features/gerber-process/service/download.ts";
 import { downloadGhostPcbClient } from "../shared/services/clientDownload.ts";
 
@@ -229,7 +228,6 @@ function App() {
               error={error}
               results={results}
               onDownloadAll={() => downloadAllResults(results)}
-              onDownloadOne={(result) => downloadResultFile(result)}
             />
           </section>
         </section>

@@ -706,7 +706,7 @@
 .finder-header,
 .finder-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 96px 108px;
+  grid-template-columns: minmax(0, 1fr) 96px;
   align-items: center;
   gap: 12px;
 }
@@ -761,12 +761,6 @@
   height: 24px;
   flex: 0 0 auto;
   border-radius: 6px;
-}
-
-.finder-action {
-  justify-self: end;
-  min-height: 32px;
-  padding: 0 12px;
 }
 
 .status-banner {
@@ -891,8 +885,15 @@
     display: none;
   }
 
-  .finder-action {
-    justify-self: start;
+  .finder-scroll {
+    justify-items: stretch;
+    padding-right: 0;
+  }
+
+  .finder-row {
+    width: 100%;
+    justify-items: start;
+    align-content: start;
   }
 }
 
