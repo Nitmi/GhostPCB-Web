@@ -151,8 +151,8 @@ function App() {
           </div>
 
           <div className="window-title">
-            <strong>Workspace</strong>
-            <span>Gerber ZIP Obfuscation Tool</span>
+            <strong>GhostPCB Web</strong>
+            <span>Local Gerber Obfuscation Tool</span>
           </div>
 
           <div className="window-toolbar">
