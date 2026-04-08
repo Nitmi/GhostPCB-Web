@@ -1,6 +1,6 @@
 export const MIN_PROCESS_COUNT = 1
 export const MAX_PROCESS_COUNT = 99
-export const DEFAULT_PROCESS_COUNT = 3
+export const DEFAULT_PROCESS_COUNT = 1
 export const ZIP_MIME_TYPE = 'application/zip'
 export const ZIP_FILE_EXTENSION = '.zip'
 
