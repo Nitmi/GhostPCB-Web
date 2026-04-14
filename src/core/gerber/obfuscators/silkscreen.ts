@@ -2,6 +2,8 @@ import { normalizeLineEndings } from '../../../shared/utils/text.ts'
 import type { SeededRandom } from '../../random/rng.ts'
 
 const FORMAT_PATTERN = /%FSLAX(\d)(\d)Y(\d)(\d)\*%/
+const SILKSCREEN_SHIFT_MIN_MM = 0.01
+const SILKSCREEN_SHIFT_MAX_MM = 0.03
 
 function convertShiftToRaw(mmValue: number, decimals: number, isInch: boolean): number {
   const normalizedValue = isInch ? mmValue / 25.4 : mmValue
@@ -17,9 +19,9 @@ function shouldSkipLine(line: string): boolean {
     trimmed.startsWith('%') ||
     trimmed.startsWith('G04') ||
     trimmed.startsWith('M') ||
-    trimmed === 'G36*' ||
-    trimmed === 'G37*' ||
-    trimmed === 'G75*'
+    trimmed.startsWith('G36') ||
+    trimmed.startsWith('G37') ||
+    trimmed.startsWith('G75')
   ) {
     return true
   }
@@ -50,8 +52,12 @@ export function applySilkscreenShift(content: string, rng: SeededRandom): string
   const xDecimals = Number(formatMatch[2])
   const yDecimals = Number(formatMatch[4])
   const isInch = normalized.includes('%MOIN*%')
-  const shiftX = convertShiftToRaw(rng.range(0.01, 0.03), xDecimals, isInch)
-  const shiftY = convertShiftToRaw(rng.range(0.01, 0.03), yDecimals, isInch)
+  const minX = convertShiftToRaw(SILKSCREEN_SHIFT_MIN_MM, xDecimals, isInch)
+  const maxX = Math.max(minX, convertShiftToRaw(SILKSCREEN_SHIFT_MAX_MM, xDecimals, isInch))
+  const minY = convertShiftToRaw(SILKSCREEN_SHIFT_MIN_MM, yDecimals, isInch)
+  const maxY = Math.max(minY, convertShiftToRaw(SILKSCREEN_SHIFT_MAX_MM, yDecimals, isInch))
+  const shiftX = rng.integer(minX, maxX)
+  const shiftY = rng.integer(minY, maxY)
 
   return normalized
     .split('\n')

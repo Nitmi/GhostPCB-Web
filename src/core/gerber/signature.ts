@@ -1,117 +1,211 @@
-import SparkMD5 from 'spark-md5'
-import { normalizeLineEndings } from '../../shared/utils/text.ts'
-import type { SeededRandom } from '../random/rng.ts'
+import SparkMD5 from "spark-md5";
+import type { SeededRandom } from "../random/rng.ts";
 
-const ADD_LINE_PATTERN = /^%ADD(\d+)(.+)%$/
+const APERTURE_MIN_ID = 10;
+const APERTURE_MAX_ID = 8191;
+const ADD_LINE_PATTERN = /^%ADD(\d{2,4})\D/;
+const USED_APERTURE_PATTERN = /D(\d{2,4})\*/g;
+const NUMBER_PATTERN = /,([\d.]+)/;
 
-function parseAddId(line: string): number | null {
-  const matched = line.match(ADD_LINE_PATTERN)
-  return matched ? Number(matched[1]) : null
+interface TextLayout {
+  eol: "\n" | "\r\n";
+  hasTrailingNewline: boolean;
 }
 
-function collectUsedApertureIds(lines: string[]): Set<number> {
-  const usedIds = new Set<number>()
+interface AddLine {
+  id: number;
+  line: string;
+  lineIndex: number;
+}
+
+function splitText(content: string): { layout: TextLayout; lines: string[] } {
+  return {
+    layout: {
+      eol: content.includes("\r\n") ? "\r\n" : "\n",
+      hasTrailingNewline: content.endsWith("\n"),
+    },
+    lines: content.split(/\r\n|\n/),
+  };
+}
+
+function joinText(lines: string[], layout: TextLayout): string {
+  const nextText = lines.join(layout.eol);
+  return layout.hasTrailingNewline && nextText.length > 0
+    ? `${nextText}${layout.eol}`
+    : nextText;
+}
+
+function collectAddLines(lines: string[]): AddLine[] {
+  return lines.flatMap((line, lineIndex) => {
+    const matched = line.match(ADD_LINE_PATTERN);
+    if (!matched) {
+      return [];
+    }
+
+    return [
+      {
+        id: Number(matched[1]),
+        line,
+        lineIndex,
+      },
+    ];
+  });
+}
+
+function collectUsedApertures(lines: string[]): Set<number> {
+  const used = new Set<number>();
 
   for (const line of lines) {
-    if (line.startsWith('%ADD')) {
-      continue
-    }
-
-    for (const match of line.matchAll(/G54D(\d+)\*/g)) {
-      usedIds.add(Number(match[1]))
-    }
-
-    for (const match of line.matchAll(/(?:^|[^A-Z])D(\d+)\*/g)) {
-      const id = Number(match[1])
-      if (id >= 10) {
-        usedIds.add(id)
+    for (const matched of line.matchAll(USED_APERTURE_PATTERN)) {
+      const apertureId = Number(matched[1]);
+      if (apertureId >= APERTURE_MIN_ID) {
+        used.add(apertureId);
       }
     }
   }
 
-  return usedIds
+  return used;
 }
 
-function shiftApertureId(id: number, baseId: number): number {
-  return id >= baseId ? id + 1 : id
-}
-
-function renumberLine(line: string, baseId: number): string {
-  let nextLine = line.replace(ADD_LINE_PATTERN, (_, id: string, rest: string) => {
-    return `%ADD${shiftApertureId(Number(id), baseId)}${rest}%`
-  })
-
-  nextLine = nextLine.replace(/G54D(\d+)\*/g, (_, id: string) => {
-    return `G54D${shiftApertureId(Number(id), baseId)}*`
-  })
-
-  nextLine = nextLine.replace(/(^|[^A-Z])D(\d+)\*/g, (_, prefix: string, id: string) => {
-    const numericId = Number(id)
-    if (numericId < 10) {
-      return `${prefix}D${id}*`
-    }
-
-    return `${prefix}D${shiftApertureId(numericId, baseId)}*`
-  })
-
-  return nextLine
-}
-
-function deriveSignatureDigits(content: string): string {
-  const digest = SparkMD5.hash(content)
-  const tail = Number.parseInt(digest.slice(-1), 16)
-  return String((tail % 90) + 10).padStart(2, '0')
-}
-
-function findSignatureInsertIndex(lines: string[]): number {
-  let lastAddIndex = -1
-
-  for (let index = 0; index < lines.length; index += 1) {
-    if (parseAddId(lines[index]) !== null) {
-      lastAddIndex = index
-    }
+function stripUnusedAddLines(lines: string[]): string[] {
+  const addLines = collectAddLines(lines);
+  if (addLines.length === 0) {
+    return [...lines];
   }
 
-  if (lastAddIndex >= 0) {
-    return lastAddIndex + 1
-  }
+  const usedApertures = collectUsedApertures(lines);
+  const removedIndexes = new Set(
+    addLines
+      .filter((entry) => !usedApertures.has(entry.id))
+      .map((entry) => entry.lineIndex),
+  );
 
-  let lastControlIndex = -1
-  for (let index = 0; index < lines.length; index += 1) {
-    const line = lines[index]
-    if (line.startsWith('%') || line.startsWith('G04')) {
-      lastControlIndex = index
-      continue
-    }
-
-    break
-  }
-
-  return lastControlIndex + 1
+  return lines.filter((_, index) => !removedIndexes.has(index));
 }
 
-export function injectLcedaSignature(content: string, rng: SeededRandom): string {
-  const normalized = normalizeLineEndings(content)
-  const lines = normalized.split('\n')
-  const usedIds = collectUsedApertureIds(lines)
+function rewritePrefixedId(
+  line: string,
+  prefix: string,
+  baseId: number,
+  minId: number,
+  requireStarAfterId: boolean,
+): string | null {
+  if (!line.startsWith(prefix)) {
+    return null;
+  }
 
-  const keptLines = lines.filter((line) => {
-    const id = parseAddId(line)
-    return id === null || usedIds.has(id)
-  })
+  const rest = line.slice(prefix.length);
+  const digits = rest.match(/^\d{2,4}/)?.[0];
+  if (!digits) {
+    return null;
+  }
 
-  const apertureIds = keptLines
-    .map((line) => parseAddId(line))
-    .filter((value): value is number => value !== null)
-    .sort((left, right) => left - right)
+  const id = Number(digits);
+  if (id < minId) {
+    return null;
+  }
 
-  const baseId = apertureIds.length > 0 ? rng.pick(apertureIds) : 10
-  const renumberedLines = keptLines.map((line) => renumberLine(line, baseId))
-  const renumberedContent = renumberedLines.join('\n')
-  const signatureDigits = deriveSignatureDigits(renumberedContent)
-  const signatureLine = `%ADD${baseId}C,0.${signatureDigits}*%`
-  const insertIndex = findSignatureInsertIndex(renumberedLines)
-  renumberedLines.splice(insertIndex, 0, signatureLine)
+  const suffix = rest.slice(digits.length);
+  if (requireStarAfterId && !suffix.startsWith("*")) {
+    return null;
+  }
 
-  return renumberedLines.join('\n')
+  const nextId =
+    id >= baseId && id < APERTURE_MAX_ID
+      ? id + 1
+      : id;
+
+  if (nextId === id) {
+    return null;
+  }
+
+  return `${prefix}${nextId}${suffix}`;
+}
+
+function shiftApertureIds(lines: string[], baseId: number): string[] {
+  return lines.map((line) => {
+    return (
+      rewritePrefixedId(line, "%ADD", baseId, APERTURE_MIN_ID, false) ??
+      rewritePrefixedId(line, "G54D", baseId, APERTURE_MIN_ID, false) ??
+      rewritePrefixedId(line, "D", baseId, APERTURE_MIN_ID, true) ??
+      line
+    );
+  });
+}
+
+function deriveMd5Pair(input: string): string {
+  const digest = SparkMD5.hash(input);
+  const lastByte = Number.parseInt(digest.slice(-2), 16);
+  return String(lastByte % 100).padStart(2, "0");
+}
+
+function buildSignatureLine(
+  selectedLine: string,
+  selectedId: number,
+  pair: string,
+  rng: SeededRandom,
+): string {
+  const baseLine = NUMBER_PATTERN.test(selectedLine)
+    ? selectedLine
+    : `%ADD${selectedId}C,${rng.next().toFixed(4)}*%`;
+
+  return baseLine.replace(NUMBER_PATTERN, (_, value: string) => {
+    const base = Number.parseFloat(value) || 0.01;
+    let merged = `${base.toFixed(2)}${pair}`;
+
+    if (Number.parseFloat(merged) === 0) {
+      merged = "0.0100";
+    }
+
+    return `,${merged}`;
+  });
+}
+
+function findInsertIndex(lines: string[], selectedId: number): number {
+  const addLines = collectAddLines(lines);
+  if (addLines.length === 0) {
+    return 0;
+  }
+
+  const addLineById = new Map(addLines.map((entry) => [entry.id, entry.lineIndex]));
+  const nextId = selectedId + 1;
+
+  if (addLineById.has(nextId)) {
+    return addLineById.get(nextId) ?? 0;
+  }
+
+  return (addLines.at(-1)?.lineIndex ?? -1) + 1;
+}
+
+export function injectLcedaSignature(
+  content: string,
+  rng: SeededRandom,
+  importedMode = false,
+): string {
+  const { layout, lines } = splitText(content);
+  const keptLines = stripUnusedAddLines(lines);
+  const addLines = collectAddLines(keptLines);
+
+  if (addLines.length === 0) {
+    return joinText(keptLines, layout);
+  }
+
+  const pickIndex = 5 + rng.integer(0, 4);
+  const selected = addLines[Math.min(pickIndex, addLines.length - 1)];
+  if (!selected) {
+    return joinText(keptLines, layout);
+  }
+
+  const shiftedLines = shiftApertureIds(keptLines, selected.id);
+  const shiftedText = joinText(shiftedLines, layout);
+  const hashBase = importedMode ? `494d${shiftedText}` : shiftedText;
+  const signatureLine = buildSignatureLine(
+    selected.line,
+    selected.id,
+    deriveMd5Pair(hashBase),
+    rng,
+  );
+
+  shiftedLines.splice(findInsertIndex(shiftedLines, selected.id), 0, signatureLine);
+  return joinText(shiftedLines, layout);
 }

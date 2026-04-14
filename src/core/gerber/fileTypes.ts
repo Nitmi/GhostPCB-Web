@@ -40,7 +40,7 @@ export function detectGerberFileType(fileName: string): GerberFileType {
     return fixedType
   }
 
-  if (/^G\d+$/i.test(extension)) {
+  if (/^G.+$/i.test(extension) && extension.length >= 2) {
     return 'inner-layer'
   }
 

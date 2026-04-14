@@ -61,7 +61,7 @@ export function runGerberPipeline(
     }
 
     if (!sourceLooksEasyEda) {
-      content = injectEasyEdaHeader(content, textEntry.name, textEntry.type, now)
+      content = injectEasyEdaHeader(content, textEntry.name, now)
     }
 
     content = injectLcedaSignature(content, rng)

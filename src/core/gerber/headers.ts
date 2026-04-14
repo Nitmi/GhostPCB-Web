@@ -1,12 +1,9 @@
 import { formatDateTime } from '../../shared/utils/format.ts'
 import { normalizeLineEndings } from '../../shared/utils/text.ts'
-import { getLayerDisplayName } from './fileTypes.ts'
-import type { KnownGerberFileType } from './types.ts'
 
 export function injectEasyEdaHeader(
   content: string,
   fileName: string,
-  type: Exclude<KnownGerberFileType, 'drill'>,
   now: Date,
 ): string {
   const normalized = normalizeLineEndings(content)
@@ -15,8 +12,9 @@ export function injectEasyEdaHeader(
     return normalized
   }
 
+  const layerName = fileName.split(/[\\/]/).pop() ?? fileName
   const header = [
-    `G04 Layer: ${getLayerDisplayName(fileName, type)}*`,
+    `G04 Layer: ${layerName}*`,
     `G04 EasyEDA Pro v3.2.91, ${formatDateTime(now)}*`,
     'G04 Gerber Generator version 0.3*',
     'G04 Scale: 100 percent, Rotated: No, Reflected: No*',

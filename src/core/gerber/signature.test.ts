@@ -11,11 +11,12 @@ X001000Y002000D03*
 M02*`
 
 describe('injectLcedaSignature', () => {
-  it('移除未使用 ADD 并插入一条新的签名 ADD', () => {
+  it('移除未使用 ADD，整体后移并插入签名 ADD', () => {
     const result = injectLcedaSignature(COPPER_SAMPLE, createRng(3))
 
     expect(result).not.toContain('%ADD11C,0.200*%')
     expect(result).toContain('%ADD11C,0.100*%')
-    expect(result).toMatch(/%ADD10C,0\.\d{2}\*%/)
+    expect(result).toMatch(/%ADD10C,0\.10\d{2}\*%/)
+    expect(result).toContain('D11*')
   })
 })
