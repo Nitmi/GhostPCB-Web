@@ -5,7 +5,7 @@
 客户端版：
 [GhostPCB](https://github.com/Nitmi/GhostPCB)
 
-<img src="docs/screenshot.png" alt="应用截图" width="1200" />
+<img src="docs/screenshot.webp" alt="应用截图" width="1200" />
 
 ## 技术栈
 
