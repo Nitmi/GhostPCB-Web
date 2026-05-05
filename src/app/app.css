@@ -565,6 +565,17 @@
   font-size: 0.74rem;
 }
 
+.progress-notice {
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(58, 90, 143, 0.12);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.42), rgba(230, 239, 255, 0.42));
+  color: var(--text-soft);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
 .result-panel {
   display: grid;
   grid-template-rows: auto 1fr auto;

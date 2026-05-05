@@ -1,74 +1,75 @@
-import { decodeTextFile, encodeTextFile } from '../../shared/utils/text.ts'
+import { encodeTextFile, normalizeLineEndings } from '../../shared/utils/text.ts'
 import { createRng } from '../random/rng.ts'
 import type { ArchiveEntry } from '../zip/unzip.ts'
-import { detectEasyEdaSource } from './detectEasyEda.ts'
-import {
-  detectGerberFileType,
-  isDrillType,
-  isKnownGerberType,
-  isSilkscreenType,
-} from './fileTypes.ts'
-import { injectEasyEdaHeader } from './headers.ts'
+import { isDrillType, isSilkscreenType } from './fileTypes.ts'
+import { applyGerberExportProfile } from './exportProfiles.ts'
+import { collectManufacturingEntries, collectPackageExtras } from './packageEntries.ts'
+import { detectAltiumSource } from './detectExportSource.ts'
 import { injectLcedaSignature } from './signature.ts'
-import type { GerberTextEntry } from './types.ts'
 import { applySilkscreenShift } from './obfuscators/silkscreen.ts'
+import type { GerberTextEntry } from './types.ts'
 
 export interface GerberPipelineOptions {
   now: Date
   seed: number
   throwIfCanceled?: () => void
+  onSourceFlavorDetected?: (flavor: 'altium-designer') => void
 }
 
 export function runGerberPipeline(
   entries: ArchiveEntry[],
   options: GerberPipelineOptions,
 ): ArchiveEntry[] {
-  const { now, seed, throwIfCanceled } = options
+  const { now, seed, throwIfCanceled, onSourceFlavorDetected } = options
   const rng = createRng(seed)
-  const textEntries = new Map<string, GerberTextEntry>()
+  const manufacturingEntries = collectManufacturingEntries(entries)
+  const sourceEntries: GerberTextEntry[] = manufacturingEntries.map((entry) => ({
+    name: entry.name,
+    type: entry.type,
+    content: entry.content,
+  }))
+  const outputEntries: ArchiveEntry[] = []
 
-  for (const entry of entries) {
-    const type = detectGerberFileType(entry.name)
-    if (!isKnownGerberType(type)) {
+  if (detectAltiumSource(sourceEntries)) {
+    onSourceFlavorDetected?.('altium-designer')
+  }
+
+  for (const entry of manufacturingEntries) {
+    throwIfCanceled?.()
+
+    if (isDrillType(entry.type)) {
+      outputEntries.push({
+        name: entry.outputName,
+        data: encodeTextFile(normalizeDrillContent(entry.content)),
+      })
       continue
     }
 
-    textEntries.set(entry.name, {
-      name: entry.name,
-      type,
-      content: decodeTextFile(entry.data, entry.name),
-    })
-  }
+    let content = entry.content
 
-  const sourceLooksEasyEda = detectEasyEdaSource([...textEntries.values()])
-
-  return entries.map((entry) => {
-    throwIfCanceled?.()
-
-    const textEntry = textEntries.get(entry.name)
-    if (!textEntry) {
-      return entry
-    }
-
-    if (isDrillType(textEntry.type)) {
-      return entry
-    }
-
-    let content = textEntry.content
-
-    if (isSilkscreenType(textEntry.type)) {
+    if (isSilkscreenType(entry.type)) {
       content = applySilkscreenShift(content, rng)
     }
 
-    if (!sourceLooksEasyEda) {
-      content = injectEasyEdaHeader(content, textEntry.name, now)
-    }
-
+    content = applyGerberExportProfile(content, entry, now)
     content = injectLcedaSignature(content, rng)
 
-    return {
-      name: entry.name,
+    outputEntries.push({
+      name: entry.outputName,
       data: encodeTextFile(content),
-    }
-  })
+    })
+  }
+
+  for (const extra of collectPackageExtras(entries)) {
+    outputEntries.push({
+      name: extra.name,
+      data: encodeTextFile(extra.content),
+    })
+  }
+
+  return outputEntries
+}
+
+function normalizeDrillContent(content: string): string {
+  return normalizeLineEndings(content)
 }

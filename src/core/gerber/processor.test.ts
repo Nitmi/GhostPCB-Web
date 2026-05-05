@@ -12,15 +12,66 @@ X001000Y002000D02*
 X001500Y002500I000100J000200D01*
 M02*`
 
-const TOP_COPPER = `%FSLAX24Y24*%
-%MOMM*%
+const TOP_COPPER = `G04*
+G04 #@! TF.GenerationSoftware,Altium Limited,Altium Designer,20.0.13 (296)*
+G04*
+G04 Layer_Color=255*
+%FSLAX24Y24*%
+%MOIN*%
 %ADD10C,0.150*%
 D10*
 X010000Y010000D03*
 M02*`
 
-const DRILL = `M48
-;DRILL FILE
+const INNER_LAYER = `%FSLAX45Y45*%
+%MOMM*%
+%ADD10C,0.2032*%
+D10*
+X000100Y000200D03*
+M02*`
+
+const OUTLINE = `%FSLAX45Y45*%
+%MOMM*%
+%ADD10C,0.2000*%
+D10*
+X000000Y000000D02*
+X010000Y000000D01*
+M02*`
+
+const DRILL_PTH = `;TYPE=PLATED
+;Layer: PTH_Through
+M48
+METRIC,LZ,0000.00000
+T01C0.43180
+%
+G05
+G90
+T01
+X1.47188Y-6.3499
+M30`
+
+const DRILL_NPTH = `;TYPE=NON_PLATED
+;Layer: NPTH_Through
+M48
+METRIC,LZ,0000.00000
+T01C1.00000
+%
+G05
+G90
+T01
+X3.54118Y-9.39276
+M30`
+
+const DRILL_VIA = `;TYPE=PLATED
+;Layer: PTH_Through_Via
+M48
+METRIC,LZ,0000.00000
+T01C0.30500
+%
+G05
+G90
+T01
+X7.112Y16.13395
 M30`
 
 function readEntryText(entries: ReturnType<typeof unzipArchive>, fileName: string): string {
@@ -33,43 +84,100 @@ function readEntryText(entries: ReturnType<typeof unzipArchive>, fileName: strin
 }
 
 describe('generateGerberOutputs', () => {
-  it('从 ZIP 输入生成多个独立结果 ZIP', () => {
+  it('只输出标准制造文件并统一命名', () => {
+    const progressMessages: string[] = []
     const archive = zipArchive([
-      { name: 'board.GTO', data: new TextEncoder().encode(TOP_SILK) },
-      { name: 'board.GTL', data: new TextEncoder().encode(TOP_COPPER) },
-      { name: 'board.DRL', data: new TextEncoder().encode(DRILL) },
-      { name: 'notes.txt', data: new TextEncoder().encode('keep me') },
+      { name: 'Core_S3.GTO', data: new TextEncoder().encode(TOP_SILK) },
+      { name: 'Core_S3.GTL', data: new TextEncoder().encode(TOP_COPPER) },
+      { name: 'Core_S3.G1', data: new TextEncoder().encode(INNER_LAYER) },
+      { name: 'Core_S3.GKO', data: new TextEncoder().encode(OUTLINE) },
+      { name: 'Core_S3.GD1', data: new TextEncoder().encode('%FSLAX24Y24*%\nM02*') },
+      { name: 'Core_S3.GM1', data: new TextEncoder().encode('%FSLAX24Y24*%\nM02*') },
+      { name: 'Core_S3.TXT', data: new TextEncoder().encode(DRILL_PTH) },
+      { name: 'Core_S3-NPTH.XLN', data: new TextEncoder().encode(DRILL_NPTH) },
+      { name: 'Core_S3-Via.TXT', data: new TextEncoder().encode(DRILL_VIA) },
+      { name: 'CAMtastic1.Cam', data: new TextEncoder().encode('skip me') },
+      { name: 'FlyingProbeTesting.json', data: new TextEncoder().encode('{}') },
     ])
 
     const outputs = generateGerberOutputs({
       archive,
-      count: 2,
+      count: 1,
       now: new Date(2026, 3, 8, 12, 0, 0),
       seed: 42,
       sourceName: 'board.zip',
+      onProgress(progress) {
+        progressMessages.push(progress.message)
+      },
     })
 
-    expect(outputs).toHaveLength(2)
+    expect(outputs).toHaveLength(1)
     expect(outputs[0]?.fileName).toMatch(/^Gerber_PCB1_\d{4}-\d{2}-\d{2}\.zip$/)
-    expect(outputs[1]?.fileName).toMatch(/^Gerber_PCB2_\d{4}-\d{2}-\d{2}\.zip$/)
 
-    const firstArchive = unzipArchive(outputs[0].data)
-    const secondArchive = unzipArchive(outputs[1].data)
+    const resultArchive = unzipArchive(outputs[0].data)
+    expect(resultArchive.map((entry) => entry.name)).toEqual([
+      'Gerber_TopLayer.GTL',
+      'Gerber_InnerLayer1.G1',
+      'Gerber_TopSilkscreenLayer.GTO',
+      'Gerber_BoardOutlineLayer.GKO',
+      'Drill_NPTH_Through.DRL',
+      'Drill_PTH_Through.DRL',
+      'Drill_PTH_Through_Via.DRL',
+      'PCB下单必读.txt',
+      'FlyingProbeTesting.json',
+    ])
 
-    const firstSilk = readEntryText(firstArchive, 'board.GTO')
-    const secondSilk = readEntryText(secondArchive, 'board.GTO')
-    const firstCopper = readEntryText(firstArchive, 'board.GTL')
-    const firstDrill = readEntryText(firstArchive, 'board.DRL')
-    const firstNotes = readEntryText(firstArchive, 'notes.txt')
+    const copper = readEntryText(resultArchive, 'Gerber_TopLayer.GTL')
+    const silkscreen = readEntryText(resultArchive, 'Gerber_TopSilkscreenLayer.GTO')
+    const drill = readEntryText(resultArchive, 'Drill_PTH_Through.DRL')
+    const orderReadme = readEntryText(resultArchive, 'PCB下单必读.txt')
+    const flyingProbe = readEntryText(resultArchive, 'FlyingProbeTesting.json')
 
-    expect(firstSilk).toContain('G04 Layer: board.GTO*')
-    expect(firstSilk).toContain('I000100J000200')
-    expect(firstSilk).not.toContain('X001000Y002000D02*')
-    expect(firstCopper).toContain('G04 Layer: board.GTL*')
-    expect(firstCopper).toMatch(/%ADD10C,0\.\d{4}\*%/)
-    expect(firstDrill).toBe(DRILL)
-    expect(firstNotes).toBe('keep me')
-    expect(firstSilk).not.toBe(secondSilk)
+    expect(copper).toContain('G04 Layer: TopLayer*')
+    expect(copper).toContain('G04 EasyEDA Pro v3.2.58, 2026-04-08 12:00:00*')
+    expect(copper).not.toContain('Altium Designer')
+    expect(copper).toMatch(/%ADD10C,0\.\d{4}\*%/)
+    expect(progressMessages).toContain(
+      '检测到原始 Gerber 由 Altium Designer 导出，结果产物将被伪装为立创 Gerber',
+    )
+    expect(silkscreen).toContain('G04 Layer: TopSilkscreenLayer*')
+    expect(silkscreen).toContain('I000100J000200')
+    expect(silkscreen).not.toContain('X001000Y002000D02*')
+    expect(drill).toContain(';TYPE=PLATED')
+    expect(drill).toContain('M48')
+    expect(orderReadme).toContain('https://prodocs.lceda.cn/cn/pcb/order-order-pcb/index.html')
+    expect(flyingProbe).toBe('{}')
+  })
+
+  it('兼容四层板输出与多钻孔文件命名', () => {
+    const archive = zipArchive([
+      { name: 'board.GTL', data: new TextEncoder().encode(TOP_COPPER) },
+      { name: 'board.GBL', data: new TextEncoder().encode(TOP_COPPER) },
+      { name: 'board.G2', data: new TextEncoder().encode(INNER_LAYER) },
+      { name: 'board.G1', data: new TextEncoder().encode(INNER_LAYER) },
+      { name: 'board.GTS', data: new TextEncoder().encode(OUTLINE) },
+      { name: 'board.GBS', data: new TextEncoder().encode(OUTLINE) },
+      { name: 'board.DRL', data: new TextEncoder().encode(DRILL_PTH) },
+      { name: 'board_npth.TXT', data: new TextEncoder().encode(DRILL_NPTH) },
+      { name: 'board_via.XLN', data: new TextEncoder().encode(DRILL_VIA) },
+    ])
+
+    const outputs = generateGerberOutputs({
+      archive,
+      count: 1,
+      now: new Date(2026, 3, 8, 12, 0, 0),
+      seed: 7,
+      sourceName: '4layer.zip',
+    })
+
+    const resultArchive = unzipArchive(outputs[0].data)
+    expect(resultArchive.map((entry) => entry.name)).toContain('Gerber_InnerLayer1.G1')
+    expect(resultArchive.map((entry) => entry.name)).toContain('Gerber_InnerLayer2.G2')
+    expect(resultArchive.map((entry) => entry.name)).toContain('Gerber_BottomLayer.GBL')
+    expect(resultArchive.map((entry) => entry.name)).toContain('Drill_NPTH_Through.DRL')
+    expect(resultArchive.map((entry) => entry.name)).toContain('Drill_PTH_Through_Via.DRL')
+    expect(resultArchive.map((entry) => entry.name)).toContain('PCB下单必读.txt')
+    expect(resultArchive.map((entry) => entry.name)).not.toContain('FlyingProbeTesting.json')
   })
 
   it('对没有有效 Gerber 文件的 ZIP 报错', () => {

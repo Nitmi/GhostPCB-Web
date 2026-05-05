@@ -40,6 +40,7 @@ function App() {
   );
   const [results, setResults] = useState<DownloadableResult[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [processNotice, setProcessNotice] = useState<string | null>(null);
   const [isDownloadingClient, setIsDownloadingClient] = useState(false);
   const [clientDownloadError, setClientDownloadError] = useState<string | null>(
     null,
@@ -62,6 +63,7 @@ function App() {
       setSelectedFile(null);
       setResults([]);
       setError(null);
+      setProcessNotice(null);
       setStatus("idle");
       setProgress(createEmptyProgress());
       return;
@@ -76,6 +78,7 @@ function App() {
     setSelectedFile(file);
     setResults([]);
     setError(null);
+    setProcessNotice(null);
     setStatus("idle");
     setProgress(createEmptyProgress());
   };
@@ -90,6 +93,7 @@ function App() {
     setCount(normalizedCount);
     setStatus("running");
     setError(null);
+    setProcessNotice(null);
     setResults([]);
     setProgress({
       phase: "preparing",
@@ -102,7 +106,13 @@ function App() {
     const task = createGerberProcessTask({
       file: selectedFile,
       count: normalizedCount,
-      onProgress: setProgress,
+      onProgress: (nextProgress) => {
+        if (nextProgress.phase === "analyzing") {
+          setProcessNotice(nextProgress.message);
+        }
+
+        setProgress(nextProgress);
+      },
     });
 
     taskRef.current = task;
@@ -222,6 +232,7 @@ function App() {
           <section className="workspace-main">
             <ProgressBar
               progress={progress}
+              notice={processNotice}
             />
             <ResultPanel
               status={status}

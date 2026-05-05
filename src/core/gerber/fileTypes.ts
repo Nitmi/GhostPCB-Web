@@ -13,6 +13,8 @@ const FIXED_EXTENSION_TYPES: Record<string, KnownGerberFileType> = {
   GTS: 'top-mask',
 }
 
+const INNER_LAYER_EXTENSION_PATTERN = /^G(\d+)$/i
+
 const LAYER_NAMES: Record<Exclude<KnownGerberFileType, 'inner-layer'>, string> = {
   'bottom-copper': 'Bottom Layer',
   'bottom-mask': 'Bottom Solder Mask',
@@ -32,6 +34,8 @@ function getFileExtension(fileName: string): string {
   return (ext ?? '').toUpperCase()
 }
 
+export { getFileExtension }
+
 export function detectGerberFileType(fileName: string): GerberFileType {
   const extension = getFileExtension(fileName)
   const fixedType = FIXED_EXTENSION_TYPES[extension]
@@ -40,7 +44,7 @@ export function detectGerberFileType(fileName: string): GerberFileType {
     return fixedType
   }
 
-  if (/^G.+$/i.test(extension) && extension.length >= 2) {
+  if (INNER_LAYER_EXTENSION_PATTERN.test(extension)) {
     return 'inner-layer'
   }
 
@@ -64,10 +68,18 @@ export function getLayerDisplayName(
   type: Exclude<KnownGerberFileType, 'drill'>,
 ): string {
   if (type === 'inner-layer') {
-    const extension = getFileExtension(fileName)
-    const layerNumber = extension.replace(/^G/i, '')
+    const layerNumber = getInnerLayerOrder(fileName) ?? getFileExtension(fileName).replace(/^G/i, '')
     return `Inner Layer ${layerNumber}`
   }
 
   return LAYER_NAMES[type]
+}
+
+export function getInnerLayerOrder(fileName: string): number | null {
+  const matched = getFileExtension(fileName).match(INNER_LAYER_EXTENSION_PATTERN)
+  if (!matched) {
+    return null
+  }
+
+  return Number(matched[1])
 }

@@ -14,8 +14,20 @@ export type GerberFileType =
 
 export type KnownGerberFileType = Exclude<GerberFileType, 'unknown'>
 
+export type DrillFileRole = 'plated' | 'non-plated' | 'via'
+
 export interface GerberTextEntry {
   name: string
   type: KnownGerberFileType
+  content: string
+}
+
+export interface PreparedGerberEntry extends GerberTextEntry {
+  outputName: string
+  drillRole?: DrillFileRole
+}
+
+export interface PackageExtraEntry {
+  name: string
   content: string
 }

@@ -47,7 +47,15 @@ function emitProgress(
 export function generateGerberOutputs(
   options: GenerateGerberOutputsOptions,
 ): GeneratedArchiveResult[] {
-  const { archive, count, now, seed, sourceName, onProgress, throwIfCanceled } = options
+  const {
+    archive,
+    count,
+    now,
+    seed,
+    sourceName,
+    onProgress,
+    throwIfCanceled,
+  } = options
   const safeCount = Math.max(1, Math.min(99, Math.round(count)))
 
   emitProgress(onProgress, {
@@ -89,6 +97,19 @@ export function generateGerberOutputs(
       now,
       seed: iterationSeed,
       throwIfCanceled,
+      onSourceFlavorDetected(flavor) {
+        if (flavor !== 'altium-designer') {
+          return
+        }
+
+        emitProgress(onProgress, {
+          phase: 'analyzing',
+          percent: Math.min(95, processingPercent + 2),
+          current,
+          total: safeCount,
+          message: '检测到原始 Gerber 由 Altium Designer 导出，结果产物将被伪装为立创 Gerber',
+        })
+      },
     })
 
     throwIfCanceled?.()

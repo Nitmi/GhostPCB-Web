@@ -2,10 +2,11 @@ import type { ProgressState } from "../model/types.ts";
 
 interface ProgressBarProps {
   progress: ProgressState;
+  notice: string | null;
 }
 
 export function ProgressBar(props: ProgressBarProps) {
-  const { progress } = props;
+  const { progress, notice } = props;
 
   return (
     <section className="panel panel-dark progress-panel">
@@ -28,6 +29,12 @@ export function ProgressBar(props: ProgressBarProps) {
             {progress.current}/{progress.total || 0}
           </span>
         </div>
+
+        {notice ? (
+          <div className="progress-notice" data-tone="neutral">
+            {notice}
+          </div>
+        ) : null}
       </div>
     </section>
   );

@@ -1,6 +1,6 @@
 # GhostPCB Web
 
-一个 Gerber ZIP 文件指纹混淆工具的纯前端 Web 版。异化 Gerber 文件，但生产出来是同样的 PCB。
+一个在浏览器本地运行的 Gerber ZIP 文件处理工具。异化 Gerber 文件，但生产出来是同样的 PCB。
 
 客户端版：
 [GhostPCB](https://github.com/Nitmi/GhostPCB)
@@ -38,9 +38,6 @@
 - `Gerber_PCB{序号}_YYYY-MM-DD.zip`
 
 ## 部署
-
-### Vercel 一键部署
-点击顶部按钮即可直接部署到 Vercel。
 
 ### 本地运行
 
