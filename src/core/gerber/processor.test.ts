@@ -127,7 +127,7 @@ describe('generateGerberOutputs', () => {
     })
 
     expect(outputs).toHaveLength(1)
-    expect(outputs[0]?.fileName).toMatch(/^Gerber_PCB1_\d{4}-\d{2}-\d{2}\.zip$/)
+    expect(outputs[0]?.fileName).toBe('board_改1.zip')
 
     const resultArchive = unzipArchive(outputs[0].data)
     expect(resultArchive.map((entry) => entry.name)).toEqual([
@@ -186,6 +186,7 @@ describe('generateGerberOutputs', () => {
     })
 
     const resultArchive = unzipArchive(outputs[0].data)
+    expect(outputs[0]?.fileName).toBe('4layer_改1.zip')
     expect(resultArchive.map((entry) => entry.name)).toContain('Gerber_InnerLayer1.G1')
     expect(resultArchive.map((entry) => entry.name)).toContain('Gerber_InnerLayer2.G2')
     expect(resultArchive.map((entry) => entry.name)).toContain('Gerber_BottomLayer.GBL')
@@ -212,6 +213,7 @@ describe('generateGerberOutputs', () => {
     })
 
     const resultArchive = unzipArchive(outputs[0].data)
+    expect(outputs[0]?.fileName).toBe('power_改1.zip')
     expect(resultArchive.map((entry) => entry.name)).toContain('Gerber_BoardOutlineLayer.GKO')
     expect(resultArchive.map((entry) => entry.name)).toContain('Drill_PTH_Through.DRL')
     expect(resultArchive.map((entry) => entry.name)).not.toContain('Drill_PTH_Through_2.DRL')

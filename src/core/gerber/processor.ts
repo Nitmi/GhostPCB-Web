@@ -1,6 +1,6 @@
 import type { ProcessPhase } from '../../shared/constants/process.ts'
-import { formatDate } from '../../shared/utils/format.ts'
-import { createRng, hashSeed, mixSeed } from '../random/rng.ts'
+import { stripZipExtension } from '../../shared/utils/format.ts'
+import { hashSeed, mixSeed } from '../random/rng.ts'
 import { detectGerberFileType, isKnownGerberType } from './fileTypes.ts'
 import { runGerberPipeline } from './pipeline.ts'
 import { unzipArchive } from '../zip/unzip.ts'
@@ -27,14 +27,6 @@ export interface GenerateGerberOutputsOptions {
   sourceName: string
   onProgress?: (progress: ProcessingProgress) => void
   throwIfCanceled?: () => void
-}
-
-function createPastDate(now: Date, seed: number): Date {
-  const rng = createRng(seed)
-  const daysAgo = rng.integer(1, 30)
-  const date = new Date(now)
-  date.setDate(date.getDate() - daysAgo)
-  return date
 }
 
 function emitProgress(
@@ -77,6 +69,7 @@ export function generateGerberOutputs(
 
   const outputs: GeneratedArchiveResult[] = []
   const baseSeed = mixSeed(seed, hashSeed(sourceName))
+  const outputBaseName = stripZipExtension(sourceName)
 
   for (let index = 0; index < safeCount; index += 1) {
     throwIfCanceled?.()
@@ -121,9 +114,8 @@ export function generateGerberOutputs(
       message: `正在打包第 ${current}/${safeCount} 个结果包`,
     })
 
-    const outputDate = createPastDate(now, mixSeed(iterationSeed, 3001))
     outputs.push({
-      fileName: `Gerber_PCB${current}_${formatDate(outputDate)}.zip`,
+      fileName: `${outputBaseName}_改${current}.zip`,
       data: zipArchive(processedEntries),
     })
   }
