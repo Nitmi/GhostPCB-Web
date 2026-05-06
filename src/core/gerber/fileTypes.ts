@@ -7,6 +7,8 @@ const FIXED_EXTENSION_TYPES: Record<string, KnownGerberFileType> = {
   GBP: 'bottom-paste',
   DRL: 'drill',
   GKO: 'outline',
+  GML: 'outline',
+  GM1: 'outline',
   GTL: 'top-copper',
   GTO: 'top-silkscreen',
   GTP: 'top-paste',

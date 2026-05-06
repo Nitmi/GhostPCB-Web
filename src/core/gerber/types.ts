@@ -31,3 +31,12 @@ export interface PackageExtraEntry {
   name: string
   content: string
 }
+
+export interface DrillMergeBucket {
+  outputName: string
+  drillRole: DrillFileRole
+  entries: Array<{
+    name: string
+    content: string
+  }>
+}

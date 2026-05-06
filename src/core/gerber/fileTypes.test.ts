@@ -12,9 +12,10 @@ describe('detectGerberFileType', () => {
     expect(detectGerberFileType('board.GBO')).toBe('bottom-silkscreen')
     expect(detectGerberFileType('board.DRL')).toBe('drill')
     expect(detectGerberFileType('inner.G3')).toBe('inner-layer')
+    expect(detectGerberFileType('outline.GM1')).toBe('outline')
+    expect(detectGerberFileType('outline.GML')).toBe('outline')
     expect(detectGerberFileType('drawing.GDD')).toBe('unknown')
     expect(detectGerberFileType('doc.GDL')).toBe('unknown')
-    expect(detectGerberFileType('outline.GM1')).toBe('unknown')
     expect(detectGerberFileType('notes.txt')).toBe('unknown')
   })
 

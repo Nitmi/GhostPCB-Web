@@ -74,6 +74,21 @@ T01
 X7.112Y16.13395
 M30`
 
+const DRILL_SLOT = `;TYPE=PLATED
+;Layer: PTH_Through
+M48
+METRIC,LZ,0000.00000
+T05C0.5994
+%
+G90
+G05
+T05
+G00X01517934Y00488044
+M15
+G01Y00494038
+M16
+M30`
+
 function readEntryText(entries: ReturnType<typeof unzipArchive>, fileName: string): string {
   const entry = entries.find((item) => item.name === fileName)
   if (!entry) {
@@ -92,7 +107,7 @@ describe('generateGerberOutputs', () => {
       { name: 'Core_S3.G1', data: new TextEncoder().encode(INNER_LAYER) },
       { name: 'Core_S3.GKO', data: new TextEncoder().encode(OUTLINE) },
       { name: 'Core_S3.GD1', data: new TextEncoder().encode('%FSLAX24Y24*%\nM02*') },
-      { name: 'Core_S3.GM1', data: new TextEncoder().encode('%FSLAX24Y24*%\nM02*') },
+      { name: 'Core_S3.GM6', data: new TextEncoder().encode('%FSLAX24Y24*%\nM02*') },
       { name: 'Core_S3.TXT', data: new TextEncoder().encode(DRILL_PTH) },
       { name: 'Core_S3-NPTH.XLN', data: new TextEncoder().encode(DRILL_NPTH) },
       { name: 'Core_S3-Via.TXT', data: new TextEncoder().encode(DRILL_VIA) },
@@ -178,6 +193,37 @@ describe('generateGerberOutputs', () => {
     expect(resultArchive.map((entry) => entry.name)).toContain('Drill_PTH_Through_Via.DRL')
     expect(resultArchive.map((entry) => entry.name)).toContain('PCB下单必读.txt')
     expect(resultArchive.map((entry) => entry.name)).not.toContain('FlyingProbeTesting.json')
+  })
+
+  it('将 GM1 外形层和拆分的圆孔槽孔合并输出', () => {
+    const archive = zipArchive([
+      { name: 'power.GTL', data: new TextEncoder().encode(TOP_COPPER) },
+      { name: 'power.GM1', data: new TextEncoder().encode(OUTLINE) },
+      { name: 'power-RoundHoles.TXT', data: new TextEncoder().encode(DRILL_PTH) },
+      { name: 'power-SlotHoles.TXT', data: new TextEncoder().encode(DRILL_SLOT) },
+    ])
+
+    const outputs = generateGerberOutputs({
+      archive,
+      count: 1,
+      now: new Date(2026, 4, 6, 22, 0, 0),
+      seed: 11,
+      sourceName: 'power.zip',
+    })
+
+    const resultArchive = unzipArchive(outputs[0].data)
+    expect(resultArchive.map((entry) => entry.name)).toContain('Gerber_BoardOutlineLayer.GKO')
+    expect(resultArchive.map((entry) => entry.name)).toContain('Drill_PTH_Through.DRL')
+    expect(resultArchive.map((entry) => entry.name)).not.toContain('Drill_PTH_Through_2.DRL')
+
+    const outline = readEntryText(resultArchive, 'Gerber_BoardOutlineLayer.GKO')
+    const drill = readEntryText(resultArchive, 'Drill_PTH_Through.DRL')
+
+    expect(outline).toContain('G04 Layer: BoardOutlineLayer*')
+    expect(drill).toContain('T01C0.43180')
+    expect(drill).toContain('T05C0.5994')
+    expect(drill).toContain('M15')
+    expect(drill).toContain('G01Y00494038')
   })
 
   it('对没有有效 Gerber 文件的 ZIP 报错', () => {
