@@ -29,7 +29,7 @@ export interface PreparedGerberEntry extends GerberTextEntry {
 
 export interface PackageExtraEntry {
   name: string
-  content: string
+  data: Uint8Array
 }
 
 export interface DrillMergeBucket {

@@ -18,12 +18,7 @@ import type {
 } from './types.ts'
 
 const EXCELLON_EXTENSIONS = new Set(['DRL', 'TXT', 'XLN'])
-const ORDER_README_NAME = 'PCB下单必读.txt'
 const FLYING_PROBE_NAME = 'FlyingProbeTesting.json'
-const ORDER_README_CONTENT = `如何进行PCB下单
-
-请查看：
-https://prodocs.lceda.cn/cn/pcb/order-order-pcb/index.html`
 
 function safeDecodeTextFile(data: Uint8Array, fileName: string): string | null {
   try {
@@ -214,23 +209,37 @@ export function collectManufacturingEntries(entries: ArchiveEntry[]): PreparedGe
 }
 
 export function collectPackageExtras(entries: ArchiveEntry[]): PackageExtraEntry[] {
-  const extras = new Map<string, string>()
-
-  extras.set(ORDER_README_NAME, ORDER_README_CONTENT)
+  const extras = new Map<string, Uint8Array>()
+  const reservedNames = new Set<string>()
 
   for (const entry of entries) {
-    if (entry.name !== FLYING_PROBE_NAME) {
+    const type = detectGerberFileType(entry.name)
+
+    if (isKnownGerberType(type)) {
       continue
     }
 
-    const content = safeDecodeTextFile(entry.data, entry.name)
-    if (content) {
-      extras.set(FLYING_PROBE_NAME, normalizeExtraContent(content))
-      break
+    if (type === 'unknown' && isExcellonCandidateName(entry.name)) {
+      const content = safeDecodeTextFile(entry.data, entry.name)
+      if (content && isExcellonContent(content)) {
+        continue
+      }
     }
+
+    if (entry.name === FLYING_PROBE_NAME) {
+      const content = safeDecodeTextFile(entry.data, entry.name)
+      if (content) {
+        extras.set(FLYING_PROBE_NAME, new TextEncoder().encode(normalizeExtraContent(content)))
+        reservedNames.add(FLYING_PROBE_NAME)
+        continue
+      }
+    }
+
+    const outputName = createUniqueOutputName(entry.name, reservedNames)
+    extras.set(outputName, entry.data.slice())
   }
 
-  return [...extras.entries()].map(([name, content]) => ({ name, content }))
+  return [...extras.entries()].map(([name, data]) => ({ name, data }))
 }
 
 function normalizeExtraContent(content: string): string {

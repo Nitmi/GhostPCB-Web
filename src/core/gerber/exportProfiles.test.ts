@@ -72,9 +72,6 @@ describe('applyGerberExportProfile', () => {
       new Date(2026, 3, 8, 12, 0, 0),
     )
 
-    expect(result).toContain('G04 Layer: InnerLayer1*')
-    expect(result).toContain('G04 Dimensions in millimeters*')
-    expect(result).toContain('G04 Leading zeros omitted, absolute positions, 4 integers and 5 decimals*')
-    expect(result).toContain('%MOMM*%')
+    expect(result).toBe(EASYEDA_MM_ENTRY.content)
   })
 })

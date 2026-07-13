@@ -6,8 +6,22 @@ import { applyGerberExportProfile } from './exportProfiles.ts'
 import { collectManufacturingEntries, collectPackageExtras } from './packageEntries.ts'
 import { detectAltiumSource } from './detectExportSource.ts'
 import { injectLcedaSignature } from './signature.ts'
+import { applyCoordinateJitter } from './obfuscators/coordinateJitter.ts'
 import { applySilkscreenShift } from './obfuscators/silkscreen.ts'
-import type { GerberTextEntry } from './types.ts'
+import type { GerberFileType, GerberTextEntry } from './types.ts'
+
+const JITTER_MAX_MM: Partial<Record<Exclude<GerberFileType, 'drill' | 'unknown'>, number>> = {
+  outline: 0.005,
+  'top-copper': 0.003,
+  'bottom-copper': 0.003,
+  'inner-layer': 0.003,
+  'top-silkscreen': 0.003,
+  'bottom-silkscreen': 0.003,
+  'top-mask': 0.003,
+  'bottom-mask': 0.003,
+  'top-paste': 0.003,
+  'bottom-paste': 0.003,
+}
 
 export interface GerberPipelineOptions {
   now: Date
@@ -46,6 +60,11 @@ export function runGerberPipeline(
     }
 
     let content = entry.content
+    const jitterMax = JITTER_MAX_MM[entry.type as keyof typeof JITTER_MAX_MM]
+
+    if (jitterMax) {
+      content = applyCoordinateJitter(content, rng, jitterMax)
+    }
 
     if (isSilkscreenType(entry.type)) {
       content = applySilkscreenShift(content, rng)
@@ -63,7 +82,7 @@ export function runGerberPipeline(
   for (const extra of collectPackageExtras(entries)) {
     outputEntries.push({
       name: extra.name,
-      data: encodeTextFile(extra.content),
+      data: extra.data,
     })
   }
 

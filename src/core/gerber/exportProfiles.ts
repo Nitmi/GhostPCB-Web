@@ -63,6 +63,22 @@ function stripGeneratedHeaderLines(content: string): string {
   return lines.slice(index).join('\n')
 }
 
+function extractLeadingHeaderLines(content: string): string[] {
+  const lines = normalizeLineEndings(content).split('\n')
+  const headerLines: string[] = []
+
+  for (const line of lines) {
+    if (line === 'G04*' || line.startsWith('G04 ')) {
+      headerLines.push(line)
+      continue
+    }
+
+    break
+  }
+
+  return headerLines
+}
+
 function createGerberHeader(layerName: string, now: Date): string[] {
   return [
     `G04 Layer: ${layerName}*`,
@@ -93,6 +109,14 @@ export function applyGerberExportProfile(
   entry: Pick<GerberTextEntry, 'name' | 'type'>,
   now: Date,
 ): string {
+  const normalizedContent = normalizeLineEndings(content)
+  const existingHeaderLines = extractLeadingHeaderLines(normalizedContent)
+  const isEasyEdaSource = existingHeaderLines.some((line) => /^G04 EasyEDA Pro .+\*$/.test(line))
+
+  if (isEasyEdaSource) {
+    return normalizedContent
+  }
+
   const body = stripGeneratedHeaderLines(content)
   const layerLabel =
     entry.type === 'inner-layer'

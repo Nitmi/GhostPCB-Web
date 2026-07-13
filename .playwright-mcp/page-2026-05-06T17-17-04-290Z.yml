@@ -1,0 +1,364 @@
+- generic [active] [ref=e1]:
+  - img [ref=e2]
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - link [ref=e7] [cursor=pointer]:
+        - /url: "#"
+        - img [ref=e8]
+      - generic [ref=e11]:
+        - generic "文件" [ref=e14] [cursor=pointer]:
+          - generic [ref=e15]: 文件 (F)
+        - generic "视图" [ref=e18] [cursor=pointer]:
+          - generic [ref=e19]: 视图 (V)
+        - generic "工具" [ref=e22] [cursor=pointer]:
+          - generic [ref=e23]: 工具 (T)
+        - generic "高级" [ref=e26] [cursor=pointer]:
+          - generic [ref=e27]: 高级 (A)
+        - generic "设置" [ref=e30] [cursor=pointer]:
+          - generic [ref=e31]: 设置 (I)
+        - generic "帮助" [ref=e34] [cursor=pointer]:
+          - generic [ref=e35]: 帮助 (H)
+    - generic [ref=e36]:
+      - generic [ref=e40]: V3.2.131
+      - generic "通知" [ref=e46] [cursor=pointer]
+      - link "登录" [ref=e48] [cursor=pointer]:
+        - /url: "#"
+      - link "注册" [ref=e49] [cursor=pointer]:
+        - /url: "#"
+  - text: 
+  - generic [ref=e51]:
+    - generic "打开工程(Ctrl+O)" [ref=e53] [cursor=pointer]
+    - generic "左侧面板([)" [ref=e57] [cursor=pointer]
+    - generic "底部面板" [ref=e60] [cursor=pointer]
+    - generic "元件下单" [ref=e63] [cursor=pointer]
+    - generic "PCB下单" [ref=e66] [cursor=pointer]
+    - generic "设置" [ref=e69] [cursor=pointer]
+  - generic [ref=e71]:
+    - generic [ref=e72]:
+      - generic [ref=e74]:
+        - generic "自动收起：关闭" [ref=e75] [cursor=pointer]
+        - generic [ref=e78]:
+          - generic "所有工程" [ref=e79] [cursor=pointer]:
+            - generic [ref=e80]:
+              - generic [ref=e81]: 所
+              - generic [ref=e82]: 有
+              - generic [ref=e83]: 工
+              - generic [ref=e84]: 程
+          - generic "常用库" [ref=e85] [cursor=pointer]:
+            - generic [ref=e86]:
+              - generic [ref=e87]: 常
+              - generic [ref=e88]: 用
+              - generic [ref=e89]: 库
+          - text: 
+      - generic [ref=e93]:
+        - textbox "过滤" [ref=e97]
+        - generic [ref=e103]:
+          - generic "官方示例工程" [ref=e111] [cursor=pointer]
+          - link "示例工程_3D外壳设计_2" [ref=e114] [cursor=pointer]:
+            - /url: https://pro.lceda.cn/editor#id=45d89c031e454310a3e07ba5160605c5
+            - generic "示例工程_3D外壳设计_2" [ref=e119]
+          - link "示例工程_FPC金手指设计" [ref=e122] [cursor=pointer]:
+            - /url: https://pro.lceda.cn/editor#id=44f7f81df97e4c86bf8079be25b7b584
+            - generic "示例工程_FPC金手指设计" [ref=e127]
+          - link "示例工程_面板打印设计" [ref=e130] [cursor=pointer]:
+            - /url: https://pro.lceda.cn/editor#id=e0e5e992afcb4e568f34c5afbe591c72
+            - generic "示例工程_面板打印设计" [ref=e135]
+          - link "示例工程_快速入门" [ref=e138] [cursor=pointer]:
+            - /url: https://pro.lceda.cn/editor#id=5c2b3cac95ca4d02a7c634447dc03839
+            - generic "示例工程_快速入门" [ref=e143]
+          - link "示例工程_彩色丝印设计" [ref=e146] [cursor=pointer]:
+            - /url: https://pro.lceda.cn/editor#id=013a8ba5c5544ffcb113588ab4766486
+            - generic "示例工程_彩色丝印设计" [ref=e151]
+          - link "示例工程_FPC补强设计" [ref=e154] [cursor=pointer]:
+            - /url: https://pro.lceda.cn/editor#id=a4937e0258384634b956706f7ac52d45
+            - generic "示例工程_FPC补强设计" [ref=e159]
+    - generic [ref=e160]:
+      - generic "开始页" [ref=e166]:
+        - generic [ref=e168]: 开始页
+      - generic [ref=e171]:
+        - generic [ref=e172]:
+          - generic [ref=e173]:
+            - generic [ref=e174]:
+              - link "pro-client" [ref=e175] [cursor=pointer]:
+                - /url: https://lceda.cn/page/download
+                - img [ref=e176]
+              - link "高多层教学" [ref=e177] [cursor=pointer]:
+                - /url: https://www.bilibili.com/video/BV1MTP1e6Euo/?spm_id_from=333.1387.homepage.video_card.click
+                - img [ref=e178]
+              - link "校园讲师2025" [ref=e179] [cursor=pointer]:
+                - /url: https://lceda.cn/campus_lecturer
+                - img [ref=e180]
+              - link "功能演示视频" [ref=e181] [cursor=pointer]:
+                - /url: https://www.bilibili.com/video/BV1Vm2TB4EXr/?spm_id_from=333.1387.homepage.video_card.click&vd_source=a2cfa7ab4c27b82528b05c71931dcf02
+                - img [ref=e182]
+              - link "3D打印活动" [ref=e183] [cursor=pointer]:
+                - /url: https://www.jlc-3dp.cn/freePrint?utm_a=3D2004&utm_b=mfqeda2
+                - img [ref=e184]
+              - link "111" [ref=e185] [cursor=pointer]:
+                - /url: https://activity.szlcsc.com/super.html?from=eda
+                - img [ref=e186]
+              - link "立创商城" [ref=e187] [cursor=pointer]:
+                - /url: https://activity.szlcsc.com/newuser.html?from=EDAbanner
+                - img [ref=e188]
+              - link "pro-client" [ref=e189] [cursor=pointer]:
+                - /url: https://lceda.cn/page/download
+                - img [ref=e190]
+            - paragraph [ref=e199] [cursor=pointer]
+            - paragraph [ref=e201] [cursor=pointer]
+          - generic [ref=e203]:
+            - generic [ref=e204]:
+              - heading "快速开始" [level=3] [ref=e205]:
+                - generic [ref=e206]: 快速开始
+              - generic [ref=e207]:
+                - generic "新建工程" [ref=e208] [cursor=pointer]
+                - generic "打开工程" [ref=e209] [cursor=pointer]
+                - generic "新建元件" [ref=e210] [cursor=pointer]
+                - generic "新建封装" [ref=e211] [cursor=pointer]
+                - generic "新建3D模型" [ref=e212] [cursor=pointer]
+                - generic "新建复用模块" [ref=e213] [cursor=pointer]
+                - generic "迁移标准版" [ref=e214] [cursor=pointer]
+                - generic "导入专业版" [ref=e215] [cursor=pointer]
+                - generic "导入标准版" [ref=e216] [cursor=pointer]
+                - generic "导入Altium" [ref=e217] [cursor=pointer]
+                - generic "导入KiCad" [ref=e218] [cursor=pointer]
+                - generic "导入其他" [ref=e219] [cursor=pointer]
+                - generic "设置" [ref=e220] [cursor=pointer]
+                - generic "关于" [ref=e221] [cursor=pointer]
+            - generic [ref=e222]:
+              - heading "更多" [level=3] [ref=e223]:
+                - generic [ref=e224]: 更多
+              - generic [ref=e226]:
+                - generic "文档教程" [ref=e227] [cursor=pointer]:
+                  - img [ref=e229]
+                  - paragraph [ref=e230]: 文档教程
+                - generic "更新记录" [ref=e231] [cursor=pointer]:
+                  - img [ref=e233]
+                  - paragraph [ref=e234]: 更新记录
+                - generic "视频教程" [ref=e235] [cursor=pointer]:
+                  - img [ref=e237]
+                  - paragraph [ref=e238]: 视频教程
+                - generic "FPC教程" [ref=e239] [cursor=pointer]:
+                  - img [ref=e241]
+                  - paragraph [ref=e242]: FPC教程
+                - generic "外壳教程" [ref=e243] [cursor=pointer]:
+                  - img [ref=e245]
+                  - paragraph [ref=e246]: 外壳教程
+                - generic "彩印教程" [ref=e247] [cursor=pointer]:
+                  - img [ref=e249]
+                  - paragraph [ref=e250]: 彩印教程
+                - generic "问题反馈" [ref=e251] [cursor=pointer]:
+                  - img [ref=e253]
+                  - paragraph [ref=e254]: 问题反馈
+                - generic "用户论坛" [ref=e255] [cursor=pointer]:
+                  - img [ref=e257]
+                  - paragraph [ref=e258]: 用户论坛
+                - generic "开源平台" [ref=e259] [cursor=pointer]:
+                  - img [ref=e261]
+                  - paragraph [ref=e262]: 开源平台
+                - generic "立创商城" [ref=e263] [cursor=pointer]:
+                  - img [ref=e265]
+                  - paragraph [ref=e266]: 立创商城
+                - generic "Gerber预览" [ref=e267] [cursor=pointer]:
+                  - img [ref=e269]
+                  - paragraph [ref=e270]: Gerber预览
+                - generic "嘉立创PCB" [ref=e271] [cursor=pointer]:
+                  - img [ref=e273]
+                  - paragraph [ref=e274]: 嘉立创PCB
+                - generic "免费画库" [ref=e275] [cursor=pointer]:
+                  - img [ref=e277]
+                  - paragraph [ref=e278]: 免费画库
+                - generic "阻抗计算" [ref=e279] [cursor=pointer]:
+                  - img [ref=e281]
+                  - paragraph [ref=e282]: 阻抗计算
+                - generic "层压结构" [ref=e283] [cursor=pointer]:
+                  - img [ref=e285]
+                  - paragraph [ref=e286]: 层压结构
+                - generic "Layout服务" [ref=e287] [cursor=pointer]:
+                  - img [ref=e289]
+                  - paragraph [ref=e290]: Layout服务
+                - generic "书籍推荐" [ref=e291] [cursor=pointer]:
+                  - img [ref=e293]
+                  - paragraph [ref=e294]: 书籍推荐
+                - generic "扩展广场" [ref=e295] [cursor=pointer]:
+                  - img [ref=e297]
+                  - paragraph [ref=e298]: 扩展广场
+                - generic "教育版申请" [ref=e299] [cursor=pointer]:
+                  - img [ref=e301]
+                  - paragraph [ref=e302]: 教育版申请
+                - generic "添加工具/服务" [ref=e303] [cursor=pointer]
+          - generic [ref=e305]:
+            - generic [ref=e306]:
+              - paragraph [ref=e307]: 最近设计
+              - list [ref=e308]:
+                - listitem "工程" [ref=e309] [cursor=pointer]
+                - listitem "器件" [ref=e310] [cursor=pointer]
+                - listitem "封装" [ref=e311] [cursor=pointer]
+                - listitem "复用模块" [ref=e312] [cursor=pointer]
+            - generic [ref=e313]:
+              - generic [ref=e314]:
+                - generic [ref=e315]: 序号
+                - generic [ref=e316]: 名称
+                - generic [ref=e317]: 归属于
+                - generic [ref=e318]: 最近更新人
+                - generic [ref=e319]: 更新时间
+              - paragraph [ref=e321]: 暂无数据
+        - generic [ref=e322]:
+          - list [ref=e324]:
+            - listitem [ref=e325]:
+              - link [ref=e326] [cursor=pointer]:
+                - /url: https://www.bilibili.com/video/BV136421f7PK/?spm_id_from=333.788&vd_source=a2cfa7ab4c27b82528b05c71931dcf02
+                - img [ref=e327]
+            - listitem [ref=e328]:
+              - link [ref=e329] [cursor=pointer]:
+                - /url: https://mp.weixin.qq.com/s/WDH09kYQlux85jBXwRRZLw
+                - img [ref=e330]
+          - generic [ref=e331]:
+            - heading "消息" [level=3] [ref=e332]
+            - list [ref=e333]:
+              - list [ref=e334]:
+                - listitem [ref=e335]:
+                  - link "【更新】嘉立创EDA专业版快速入门视频教程 >>>" [ref=e336] [cursor=pointer]:
+                    - /url: https://www.bilibili.com/video/BV1x6421f7AT/?spm_id_from=333.999.0.0
+                    - strong [ref=e337]: 【更新】
+                    - text: 嘉立创EDA专业版快速入门视频教程 >>>
+                - listitem [ref=e338]:
+                  - link "【插件】嘉立创EDA专业版第三方插件汇总 >>>" [ref=e339] [cursor=pointer]:
+                    - /url: https://ext.lceda.cn
+                    - strong [ref=e340]: 【插件】
+                    - text: 嘉立创EDA专业版第三方插件汇总 >>>
+                - listitem [ref=e341]:
+                  - link "【更新】嘉立创EDA v3.x 更新说明 >>>" [ref=e342] [cursor=pointer]:
+                    - /url: https://pro.lceda.cn/page/update-record
+                    - strong [ref=e343]: 【更新】
+                    - text: 嘉立创EDA v3.x 更新说明 >>>
+          - generic [ref=e344]:
+            - list [ref=e345]:
+              - listitem [ref=e346]:
+                - link "公众号" [ref=e347] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e349]: 公众号
+              - listitem [ref=e350]:
+                - link "客服微信" [ref=e351] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e353]: 客服微信
+              - listitem [ref=e354]:
+                - link "电话" [ref=e355] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e357]: 电话
+              - listitem [ref=e358]:
+                - link "反馈" [ref=e359] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e361]: 反馈
+            - generic:
+              - text:   
+              - generic [ref=e362]:
+                - list [ref=e363]:
+                  - listitem [ref=e364]:
+                    - generic [ref=e365]: 
+                    - text: 153 6159 2675
+                - generic [ref=e366]:
+                  - generic [ref=e367]: 服务时间
+                  - generic [ref=e368]: 周一至周五
+                  - generic [ref=e369]: 9:00~18:00
+    - generic [ref=e372]:
+      - generic "自动收起：关闭" [ref=e373] [cursor=pointer]
+      - generic [ref=e376]:
+        - generic "库" [ref=e377] [cursor=pointer]:
+          - generic [ref=e378]: 库
+        - generic "日志" [ref=e379] [cursor=pointer]:
+          - generic [ref=e380]: 日志
+        - text:  
+  - generic [ref=e385]:
+    - generic [ref=e386]:
+      - generic [ref=e387]: 浮动工具
+      - generic [ref=e388]:
+        - generic "收起" [ref=e389] [cursor=pointer]
+        - generic "关闭" [ref=e390] [cursor=pointer]
+    - generic [ref=e393]:
+      - generic "VCC" [ref=e394] [cursor=pointer]
+      - generic "+5V" [ref=e395] [cursor=pointer]
+      - generic "地" [ref=e396] [cursor=pointer]
+      - generic "保护地" [ref=e397] [cursor=pointer]
+      - generic "模拟地" [ref=e398] [cursor=pointer]
+      - generic "输入" [ref=e399] [cursor=pointer]
+      - generic "输出" [ref=e400] [cursor=pointer]
+      - generic "双向" [ref=e401] [cursor=pointer]
+      - generic "输入" [ref=e402] [cursor=pointer]
+      - generic "输出" [ref=e403] [cursor=pointer]
+      - generic "双向" [ref=e404] [cursor=pointer]
+      - generic "网络标签" [ref=e405] [cursor=pointer]
+      - generic "短接标识" [ref=e406] [cursor=pointer]
+      - generic "非连接标识" [ref=e407] [cursor=pointer]
+      - generic "差分对标识" [ref=e408] [cursor=pointer]
+      - generic "测试点" [ref=e409] [cursor=pointer]
+  - generic [ref=e410]:
+    - generic [ref=e411]:
+      - generic [ref=e412]: 浮动工具
+      - generic [ref=e413]:
+        - generic "收起" [ref=e414] [cursor=pointer]
+        - generic "关闭" [ref=e415] [cursor=pointer]
+    - generic [ref=e419]:
+      - generic "正常视图" [ref=e420] [cursor=pointer]
+      - generic "轮廓视图" [ref=e422] [cursor=pointer]
+      - generic "Gerber视图" [ref=e424] [cursor=pointer]
+      - generic "顶面" [ref=e427] [cursor=pointer]
+      - generic "底面" [ref=e429] [cursor=pointer]
+      - generic "左面" [ref=e431] [cursor=pointer]
+      - generic "右面" [ref=e433] [cursor=pointer]
+      - generic "前面" [ref=e435] [cursor=pointer]
+      - generic "后面" [ref=e437] [cursor=pointer]
+      - generic "爆炸" [ref=e440] [cursor=pointer]
+      - generic "适应全部" [ref=e442] [cursor=pointer]
+      - generic "导入更新" [ref=e444] [cursor=pointer]
+      - generic "刷新" [ref=e446] [cursor=pointer]
+  - generic [ref=e448]:
+    - generic [ref=e449]:
+      - generic [ref=e450]: 表格设置
+      - generic "关闭" [ref=e452] [cursor=pointer]
+    - generic [ref=e455]:
+      - generic "上方添加行" [ref=e457]
+      - generic "下方添加行" [ref=e459]
+      - generic "左侧添加列" [ref=e461]
+      - generic "右侧添加列" [ref=e463]
+      - generic "删除行" [ref=e465]
+      - generic "删除列" [ref=e467]
+      - generic "合并单元格" [ref=e469]
+      - generic "拆分单元格" [ref=e471]
+      - generic [ref=e472]:
+        - generic "边框" [ref=e473]
+        - generic:
+          - generic:
+            - generic:
+              - generic "全边框"
+            - generic:
+              - generic "外边框"
+            - generic:
+              - generic "内边框"
+            - generic:
+              - generic "无边框"
+            - generic:
+              - generic "左边框"
+            - generic:
+              - generic "右边框"
+            - generic:
+              - generic "上边框"
+            - generic:
+              - generic "下边框"
+          - generic:
+            - generic "边框颜色"
+            - generic:
+              - textbox
+            - generic: "#A00000"
+          - generic "恢复默认"
+      - generic [ref=e474]:
+        - generic "顶部对齐" [ref=e475] [cursor=pointer]
+        - generic [ref=e477]:
+          - generic "顶部对齐" [ref=e478] [cursor=pointer]
+          - generic "上下居中" [ref=e479] [cursor=pointer]
+          - generic "底部对齐" [ref=e480] [cursor=pointer]
+      - generic [ref=e482]:
+        - generic "左对齐" [ref=e483] [cursor=pointer]
+        - generic [ref=e485]:
+          - generic "左对齐" [ref=e486] [cursor=pointer]
+          - generic "左右居中" [ref=e487] [cursor=pointer]
+          - generic "右对齐" [ref=e488] [cursor=pointer]
