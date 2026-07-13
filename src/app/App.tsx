@@ -119,6 +119,7 @@ function App() {
 
     try {
       const nextResults = await task.promise;
+      downloadAllResults(nextResults);
       startTransition(() => {
         setResults(nextResults);
         setStatus("success");

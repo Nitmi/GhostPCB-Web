@@ -25,7 +25,7 @@ export function ResultPanel(props: ResultPanelProps) {
             disabled={results.length === 0}
             onClick={onDownloadAll}
           >
-            全部下载
+            手动下载
           </button>
         </div>
       </div>
